@@ -1,0 +1,238 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Drift Deck | Volkswagen</title> 
+    <link rel="stylesheet" href="style.css"> 
+    <style>
+        :root { 
+            --accent: #1742a1; /* VW Deep Blue */
+            --silver: #e2e2e2;
+        } 
+        
+        /* Clean, professional dark theme */
+        body {
+            background: linear-gradient(to bottom, #111, #000);
+            background-attachment: fixed;
+        }
+
+        .car-option.active {
+            background: var(--accent);
+            color: #fff;
+            border-left: 6px solid var(--silver); /* Sturdy German feel */
+            font-weight: 600;
+            padding-left: 20px;
+        }
+
+        /* Fully transparent details area */
+        .details-area {
+            background: transparent;
+            backdrop-filter: none;
+            border: none;
+            outline: none;
+        }
+
+        .reserve-btn {
+            background-color: var(--accent);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 4px;
+        }
+        .car-option {
+    transition: all 0.3s ease; /* Smooths out the glow transition */
+    cursor: pointer;
+}
+    </style>
+    <link rel="stylesheet" href="mobileview.css">
+    <script src="testdrive.js"></script>
+</head> 
+<body> 
+
+<header> 
+    <nav class="nav-links"> 
+        <a href="cpp.html" class="nav-item">Home</a> 
+        <a href="#" class="nav-item">About</a> 
+    </nav> 
+
+    <div class="title-group"> 
+        <h1 class="logo-main">Drift Deck</h1> 
+        <div class="subtitle">driving Excellence</div> 
+    </div> 
+
+    <nav class="nav-right"> 
+        <a href="#" id="garage-display" class="nav-item">garage (0)</a> 
+    </nav> 
+</header> 
+
+<main class="dashboard"> 
+    <div id="mobile-image-wrapper">
+    <img id="mobile-car-img" src="" alt="Mobile Car View">
+</div>
+    <section class="preview-pane"> 
+        <img id="car-img" src="" alt="VW Showroom"> 
+    </section> 
+
+    <section class="sidebar"> 
+        <div id="list"></div> 
+        <div id="details" class="details-area"></div> 
+    </section> 
+</main> 
+
+<script> 
+    let currentSelection = 0;
+const fleet = [ 
+    {  
+        name: "Golf R",  
+        fullPrice: "₹42,50,000",  
+        monthly: "₹42,000/month",
+        power: "315 hp",  
+        acc: "3.9s",  
+        range: "580 km", 
+        drive: "4MOTION AWD",
+        img: "https://i.pinimg.com/736x/98/fb/a6/98fba6ec968441dd3038b8eacbfd384b.jpg"  
+    }, 
+    {  
+        name: "ID.7 GTX",  
+        fullPrice: "₹62,00,000",  
+        monthly: "₹58,000/month",
+        power: "335 hp",  
+        acc: "5.4s",  
+        range: "595 km (Electric)", 
+        drive: "Dual-Motor AWD",
+        img: "https://i.pinimg.com/736x/35/1d/c7/351dc734cd100088cb7964cd31d374d3.jpg"  
+    },
+    {  
+        name: "Tiguan R",  
+        fullPrice: "₹48,00,000",  
+        monthly: "₹52,000/month",
+        power: "320 hp",  
+        acc: "4.9s",  
+        range: "620 km", 
+        drive: "4MOTION AWD",
+        img: "https://i.pinimg.com/736x/c4/eb/b7/c4ebb700497e2488f176d05ce64f64d5.jpg"  
+    },
+    {  
+        name: "Arteon R",  
+        fullPrice: "₹52,00,000",  
+        monthly: "₹55,000/month",
+        power: "316 hp",  
+        acc: "4.6s",  
+        range: "650 km", 
+        drive: "4MOTION AWD",
+        img: "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?q=80&w=2000&auto=format&fit=crop"  
+    }
+];
+
+// Add this to your render loop to ensure buttons work properly
+function renderFleet() {
+    const container = document.getElementById('car-grid');
+    container.innerHTML = fleet.map(car => `
+        <div class="car-card">
+            <img src="${car.img}" alt="${car.name}" class="car-img">
+            <div class="car-info">
+                <h3>${car.name}</h3>
+                <div class="specs">
+                    <p>Price: ${car.fullPrice}</p>
+                    <p>Lease: ${car.monthly}</p>
+                    <p>Power: ${car.power}</p>
+                    <p>0-100: ${car.acc}</p>
+                    <p>Range: ${car.range}</p>
+                    <p>Drivetrain: ${car.drive}</p>
+                </div>
+                <div class="btn-group">
+                    <button class="reserve-btn" onclick="reserveCar('${car.name}')">Reserve Now</button>
+                    <button class="test-drive-btn" onclick="scheduleTestDrive('${car.name}')">Test Drive</button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+    function renderList() { 
+        document.getElementById('list').innerHTML = fleet.map((car, i) => ` 
+            <div class="car-option" onmouseenter="updateView(${i}, this)" onclick="updateView(${i}, this)"> 
+                ${car.name} 
+            </div> 
+        `).join(''); 
+    } 
+
+    function updateView(index, el) { 
+    currentSelection = index;
+    document.querySelectorAll('.car-option').forEach(opt => opt.classList.remove('active')); 
+    if(el) el.classList.add('active'); 
+
+    const car = fleet[index]; 
+    document.getElementById('car-img').src = car.img; 
+
+    document.getElementById('details').innerHTML = `
+        <h2 class="car-main-title">${car.name}</h2>
+        <div class="price-section">
+            <span class="full-price-tag">${car.fullPrice}</span>
+            <span class="monthly-tag">${car.monthly}</span>
+        </div>
+        <div class="action-buttons">
+            <button class="reserve-btn" onclick="reserveCar()">Book Now</button>
+            <button class="test-drive-btn" onclick="scheduleTestDrive()">Test Drive</button>
+        </div>
+        <div class="spec-grid">
+            <div class="spec-item">
+                <p class="spec-label">Peak Power</p>
+                <p class="spec-value">${car.power}</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Acceleration</p>
+                <p class="spec-value">${car.acc}</p>
+            </div>
+
+            <div class="spec-item">
+                <p class="spec-label">Est. Range</p>
+                <p class="spec-value">${car.range}</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Drivetrain</p>
+                <p class="spec-value">${car.drive}</p>
+            </div>
+
+            <div class="spec-item">
+                <p class="spec-label">Top Speed</p>
+                <p class="spec-value">Electronic Limited</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Warranty</p>
+                <p class="spec-value">4yr / 80k km</p> 
+            </div>
+        </div>
+    `;
+}
+
+    function addTogarage() { 
+        const car = fleet[currentSelection]; 
+        let garage = JSON.parse(localStorage.getItem('driftDeckgarage')) || []; 
+        garage.push(car); 
+        localStorage.setItem('driftDeckgarage', JSON.stringify(garage)); 
+        updategarageCount(); 
+        alert(`${car.name} added. Engineered for you.`); 
+    } 
+    function scheduleTestDrive() {
+    // Your luxury popup logic here
+    const modal = document.getElementById('testDriveModal');
+    if (modal) modal.style.display = 'flex';
+}
+    function updategarageCount() { 
+        const garage = JSON.parse(localStorage.getItem('driftDeckgarage')) || []; 
+        const garageDisplay = document.getElementById('garage-display'); 
+        if(garageDisplay) garageDisplay.innerText = `garage (${garage.length})`; 
+    }
+function reserveCar() {
+    const selectedCar = fleet[currentSelection];
+    // This saves the Porsche to the same place the Tesla page uses
+    localStorage.setItem('pendingReservation', JSON.stringify(selectedCar));
+    window.location.href = 'checkout.html';
+}
+    renderList(); 
+    updateView(0, document.querySelector('.car-option')); 
+    updategarageCount();
+</script> 
+<script src="imagelogic.js"></script>
+</body> 
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Login | Drift Deck</title> 
+    <style> 
+        * { box-sizing: border-box; margin: 0; padding: 0; } 
+        body { font-family: 'Segoe UI', sans-serif; background: #000; color: white; overflow-x: hidden; } 
+
+        header {
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
+            padding: 15px 50px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo-link { text-decoration: none; color: white; font-size: 1.8rem; font-weight: 900; letter-spacing: 2px; }
+
+        .login-container { 
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)),  
+                        url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1920&q=80'); 
+            background-size: cover; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh;
+            padding-top: 80px; 
+        } 
+
+        .login-card { 
+            background: rgba(255, 255, 255, 0.07);  
+            backdrop-filter: blur(25px);  
+            border: 1px solid rgba(255, 255, 255, 0.15); 
+            padding: 40px; 
+            width: 100%; 
+            max-width: 450px; 
+            border-radius: 24px; 
+            text-align: center; 
+        } 
+
+        .form-group { text-align: left; margin-bottom: 15px; position: relative; } 
+        .form-group label { display: block; margin-bottom: 6px; font-size: 0.7rem; text-transform: uppercase; opacity: 0.7; letter-spacing: 1px; } 
+        
+        .form-group input { 
+            width: 100%; 
+            padding: 12px; 
+            background: rgba(255, 255, 255, 0.9); 
+            border: 2px solid transparent; 
+            border-radius: 8px; 
+            color: #111;
+            transition: 0.3s;
+            font-size: 0.9rem;
+        } 
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #fff;
+            background: #fff;
+        }
+
+        /* Error States */
+        .error-msg {
+            color: #ff4d4d;
+            font-size: 0.65rem;
+            margin-top: 4px;
+            font-weight: 700;
+            display: none;
+            text-transform: uppercase;
+        }
+
+        input.invalid {
+            border-color: #ff4d4d !important;
+            background: #ffe6e6 !important;
+        }
+
+        .login-btn { 
+            width: 100%; 
+            padding: 16px; 
+            background: #fff; 
+            color: #000; 
+            border: none; 
+            border-radius: 10px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            text-transform: uppercase;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+
+        .login-btn:hover { background: #ccc; transform: translateY(-2px); }
+    </style> 
+</head> 
+<body> 
+
+<header> 
+    <nav class="navbar"> 
+        <a href="cpp.html" class="logo-link">Drift Deck</a> 
+        <ul style="list-style:none;"> 
+            <li><a href="cpp.html" style="color:white; text-decoration:none; font-size: 0.8rem; letter-spacing: 1px;">SHOWROOM</a></li> 
+        </ul> 
+    </nav> 
+</header> 
+
+<main class="login-container"> 
+    <form class="login-card" id="authForm" novalidate> 
+        <h1 style="letter-spacing: 2px; margin-bottom: 5px;">IGNITION</h1> 
+        <p style="opacity: 0.5; margin-bottom: 25px; font-size: 0.85rem;">Secure your driver profile</p> 
+
+        <div class="form-group"> 
+            <label>Username</label> 
+            <input type="text" id="username" placeholder="Enter username"> 
+            <div id="err-user" class="error-msg">Username required (min 3 chars)</div>
+        </div> 
+
+        <div class="form-group"> 
+            <label>Email Address</label> 
+            <input type="email" id="email" placeholder="driver@driftdeck.com"> 
+            <div id="err-email" class="error-msg">Please enter a valid email</div>
+        </div> 
+
+        <div class="form-group"> 
+            <label>Security Key</label> 
+            <input type="password" id="pass" placeholder="••••••••"> 
+            <div id="err-pass" class="error-msg">Key must be at least 6 characters</div>
+        </div> 
+
+        <div class="form-group"> 
+            <label>Confirm Security Key</label> 
+            <input type="password" id="confirm-pass" placeholder="••••••••"> 
+            <div id="err-match" class="error-msg">Security keys do not match</div>
+        </div> 
+
+        <button type="submit" class="login-btn">IGNITION</button> 
+    </form> 
+</main> 
+
+<script> 
+    const authForm = document.getElementById('authForm'); 
+
+    authForm.addEventListener('submit', (e) => { 
+        e.preventDefault(); 
+        
+        // Inputs
+        const user = document.getElementById('username');
+        const email = document.getElementById('email');
+        const pass = document.getElementById('pass');
+        const confirm = document.getElementById('confirm-pass');
+
+        // Regex for email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        
+        let isValid = true;
+
+        // Reset Styles
+        document.querySelectorAll('input').forEach(i => i.classList.remove('invalid'));
+        document.querySelectorAll('.error-msg').forEach(m => m.style.display = 'none');
+
+        // 1. Validate Username
+        if (user.value.trim().length < 3) {
+            user.classList.add('invalid');
+            document.getElementById('err-user').style.display = 'block';
+            isValid = false;
+        }
+
+        // 2. Validate Email
+        if (!emailRegex.test(email.value)) {
+            email.classList.add('invalid');
+            document.getElementById('err-email').style.display = 'block';
+            isValid = false;
+        }
+
+        // 3. Validate Password
+        if (pass.value.length < 6) {
+            pass.classList.add('invalid');
+            document.getElementById('err-pass').style.display = 'block';
+            isValid = false;
+        }
+
+        // 4. Validate Match
+        if (pass.value !== confirm.value || confirm.value === "") {
+            confirm.classList.add('invalid');
+            document.getElementById('err-match').style.display = 'block';
+            isValid = false;
+        }
+
+        // Final Submission
+        if (isValid) {
+            localStorage.setItem('isLoggedIn', 'true'); 
+            localStorage.setItem('userName', user.value.trim()); 
+            localStorage.setItem('userEmail', email.value.trim()); 
+            
+            // Visual feedback before redirect
+            const btn = document.querySelector('.login-btn');
+            btn.innerHTML = "ENGAGED...";
+            btn.style.background = "#00ff88";
+            
+            setTimeout(() => {
+                window.location.href = 'cpp.html';  
+            }, 800);
+        }
+    }); 
+</script> 
+</body> 
+</html>

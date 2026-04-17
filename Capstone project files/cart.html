@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Garage | Drift Deck</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; }
+        .garage-container { max-width: 900px; margin: 100px auto; padding: 20px; }
+        .garage-header { border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; margin-bottom: 30px; }
+        
+        .garage-item { 
+            display: flex; 
+            align-items: center; 
+            background: rgba(255,255,255,0.05); 
+            border-radius: 20px; 
+            padding: 20px; 
+            margin-bottom: 20px; 
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+        .garage-item img { width: 180px; border-radius: 12px; margin-right: 25px; }
+        .item-info { flex-grow: 1; }
+        .item-info h3 { font-size: 1.5rem; margin: 0 0 5px 0; letter-spacing: 1px; }
+        .item-price { color: #888; font-size: 1.1rem; }
+
+        .remove-btn { 
+            background: transparent; 
+            color: #ff4d4d; 
+            border: 1px solid #ff4d4d; 
+            padding: 8px 15px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            transition: 0.3s;
+        }
+        .remove-btn:hover { background: #ff4d4d; color: #fff; }
+
+        .empty-msg { text-align: center; opacity: 0.5; margin-top: 100px; }
+        .back-btn { color: #fff; text-decoration: none; border: 1px solid #fff; padding: 10px 20px; border-radius: 30px; display: inline-block; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav class="nav-links">
+        <a href="cpp.html" class="nav-item">Home</a>
+        <a href="garage.html" id="garage-display" class="nav-item">garage (0)</a>
+    </nav>
+    <h1 style="text-align:center; letter-spacing: 4px;">YOUR GARAGE</h1>
+</header>
+
+<div class="garage-container">
+    <div id="garage-list">
+        </div>
+</div>
+
+<script>
+    function rendergarage() {
+        // 1. Pull the data from the 'driftDeckgarage' key
+        const garage = JSON.parse(localStorage.getItem('driftDeckgarage')) || [];
+        const container = document.getElementById('garage-list');
+        const navgarage = document.getElementById('garage-display');
+
+        // Update Navbar Count
+        if (navgarage) navgarage.innerText = `garage (${garage.length})`;
+
+        // 2. Check if empty
+        if (garage.length === 0) {
+            container.innerHTML = `
+                <div class="empty-msg">
+                    <h2>Your Garage is Empty</h2>
+                    <p>No beasts have been added to your collection yet.</p>
+                    <a href="cpp.html" class="back-btn">Return to Showroom</a>
+                </div>`;
+            return;
+        }
+
+        // 3. Render items
+        container.innerHTML = garage.map((car, index) => `
+            <div class="garage-item">
+                <img src="${car.img}" alt="${car.name}">
+                <div class="item-info">
+                    <h3>${car.name.toUpperCase()}</h3>
+                    <p class="item-price">${car.fullPrice}</p>
+                    <p style="font-size: 0.8rem; opacity: 0.6;">Delivery to: Current City</p>
+                </div>
+                <button class="remove-btn" onclick="removeItem(${index})">Remove</button>
+            </div>
+        `).join('');
+    }
+
+    function removeItem(index) {
+        let garage = JSON.parse(localStorage.getItem('driftDeckgarage')) || [];
+        garage.splice(index, 1); // Remove the specific car
+        localStorage.setItem('driftDeckgarage', JSON.stringify(garage));
+        rendergarage(); // Refresh the page view
+    }
+
+    // Load immediately
+    window.onload = rendergarage;
+</script>
+
+</body>
+</html>

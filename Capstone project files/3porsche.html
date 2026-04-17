@@ -1,0 +1,224 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Drift Deck | Porsche</title> 
+    <link rel="stylesheet" href="style.css"> 
+    <style>
+        :root { 
+    --accent: #ff0000; 
+    --gold: #d4af37; /* The crest gold */
+} 
+
+.car-option.active {
+    background: var(--accent);
+    color: #fff;
+    /* Smooth curve on the left side */
+    border-radius: 50px 5px 5px 50px;
+    border-right: 4px solid var(--gold);
+    padding-left: 25px;
+    font-style: italic;
+}
+
+.car-main-title {
+    font-family: 'serif'; /* To match the classic Porsche logo style */
+    letter-spacing: -1px;
+}
+    </style>
+    <link rel="stylesheet" href="mobileview.css">
+    <script src="testdrive.js"></script>
+</head> 
+<body> 
+
+<header> 
+    <nav class="nav-links"> 
+        <a href="cpp.html" class="nav-item">Home</a> 
+        <a href="#" class="nav-item">About</a> 
+    </nav> 
+
+    <div class="title-group"> 
+        <h1 class="logo-main">Drift Deck</h1> 
+        <div class="subtitle">Owning the roads</div> 
+    </div> 
+
+    <nav class="nav-right"> 
+        <a href="#" id="garage-display" class="nav-item">garage (0)</a> 
+    </nav> 
+</header> 
+
+<main class="dashboard"> 
+    <div id="mobile-image-wrapper">
+    <img id="mobile-car-img" src="" alt="Mobile Car View">
+</div>
+    <section class="preview-pane"> 
+        <img id="car-img" src="" alt="Porsche Showroom"> 
+    </section> 
+
+    <section class="sidebar"> 
+        <div id="list"></div> 
+        <div id="details" class="details-area"></div> 
+    </section> 
+</main> 
+
+<script> 
+    const fleet = [ 
+    {  
+        name: "911 GT3 RS",  
+        fullPrice: "₹3,50,00,000",  
+        monthly: "₹2,15,000/month",
+        power: "518 hp",  
+        acc: "3.0s",  
+        range: "296 km/h", 
+        drive: "Rear-Wheel Drive",
+        img: "https://i.pinimg.com/736x/c0/36/70/c0367069ce9df9ec8e5e90ee86074f50.jpg"  
+    }, 
+    {  
+        name: "Taycan Turbo S",  
+        fullPrice: "₹2,45,00,000",  
+        monthly: "₹1,80,000/month",
+        power: "938 hp",  
+        acc: "2.3s",  
+        range: "630 km (Electric)", 
+        drive: "AWD Performance Plus",
+        img: "https://i.pinimg.com/1200x/a9/de/cd/a9decd130e2f354d4b0336f89c3296d6.jpg"  
+    }, 
+    {  
+        name: "718 Cayman GT4",  
+        fullPrice: "₹1,85,00,000",  
+        monthly: "₹95,000/month",
+        power: "414 hp",  
+        acc: "4.2s",  
+        range: "304 km/h", 
+        drive: "Rear-Wheel Drive",
+        img: "https://i.pinimg.com/736x/24/fa/e4/24fae43952aa154cd6cb0ecfd5079084.jpg"  
+    }, 
+    {  
+        name: "Cayenne Turbo GT",  
+        fullPrice: "₹3,10,00,000",  
+        monthly: "₹1,95,000/month",
+        power: "650 hp",  
+        acc: "3.3s",  
+        range: "300 km/h", 
+        drive: "Active All-Wheel Drive",
+        img: "https://i.pinimg.com/736x/41/57/80/415780779335c2d5b8b44edb937ccf7f.jpg"  
+    },
+    {  
+        name: "Macan Electric",  
+        fullPrice: "₹1,65,00,000",  
+        monthly: "₹72,000/month",
+        power: "402 hp",  
+        acc: "4.9s",  
+        range: "613 km (Electric)", 
+        drive: "All-Wheel Drive",
+        img: "https://i.pinimg.com/736x/82/08/7d/82087d909484146eb96ddfb499d2815b.jpg"  
+    }, 
+    {  
+        name: "Panamera Turbo E-Hybrid",  
+        fullPrice: "₹2,80,00,000",  
+        monthly: "₹1,75,000/month",
+        power: "670 hp",  
+        acc: "3.0s",  
+        range: "315 km/h", 
+        drive: "AWD Hybrid",
+        img: "https://i.pinimg.com/1200x/ea/14/0f/ea140f3b57a68288ec4128338bf48025.jpg"  
+    } 
+]; 
+
+    let currentSelection = 0; 
+
+    function renderList() { 
+        const listContainer = document.getElementById('list'); 
+        listContainer.innerHTML = fleet.map((car, i) => ` 
+            <div class="car-option"  
+                 onmouseenter="updateView(${i}, this)"  
+                 onclick="updateView(${i}, this)"> 
+                ${car.name} 
+            </div> 
+        `).join(''); 
+    } 
+
+    function updateView(index, el) { 
+    currentSelection = index;
+    document.querySelectorAll('.car-option').forEach(opt => opt.classList.remove('active')); 
+    if(el) el.classList.add('active'); 
+
+    const car = fleet[index]; 
+    document.getElementById('car-img').src = car.img; 
+
+    document.getElementById('details').innerHTML = `
+        <h2 class="car-main-title">${car.name}</h2>
+        <div class="price-section">
+            <span class="full-price-tag">${car.fullPrice}</span>
+            <span class="monthly-tag">${car.monthly}</span>
+        </div>
+        <div class="action-buttons">
+            <button class="reserve-btn" onclick="reserveCar()">Book Now</button>
+            <button class="test-drive-btn" onclick="scheduleTestDrive()">Test Drive</button>
+        </div>
+        <div class="spec-grid">
+            <div class="spec-item">
+                <p class="spec-label">Peak Power</p>
+                <p class="spec-value">${car.power}</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Acceleration</p>
+                <p class="spec-value">${car.acc}</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Est. Range</p>
+                <p class="spec-value">${car.range}</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Drivetrain</p>
+                <p class="spec-value">${car.drive}</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Top Speed</p>
+                <p class="spec-value">Track Ready</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Warranty</p>
+                <p class="spec-value">3yr / Unlimited</p> 
+            </div>
+        </div>
+    `;
+}
+function addTogarage() { 
+        const car = fleet[currentSelection]; 
+        let garage = JSON.parse(localStorage.getItem('driftDeckgarage')) || []; 
+        garage.push(car); 
+        localStorage.setItem('driftDeckgarage', JSON.stringify(garage)); 
+        updategarageCount(); 
+        alert(`${car.name} has been added to your deck!`); 
+    } 
+
+    
+    function scheduleTestDrive() {
+    // Your luxury popup logic here
+    const modal = document.getElementById('testDriveModal');
+    if (modal) modal.style.display = 'flex';
+}
+
+    function updategarageCount() { 
+        const garage = JSON.parse(localStorage.getItem('driftDeckgarage')) || []; 
+        const garageDisplay = document.getElementById('garage-display'); 
+        if(garageDisplay) { 
+            garageDisplay.innerText = `garage (${garage.length})`; 
+        } 
+    }
+    function reserveCar() {
+    const selectedCar = fleet[currentSelection];
+    // This saves the Porsche to the same place the Tesla page uses
+    localStorage.setItem('pendingReservation', JSON.stringify(selectedCar));
+    window.location.href = 'checkout.html';
+}
+
+    // Initialize 
+    renderList(); 
+    updateView(0, document.querySelector('.car-option')); 
+    updategarageCount(); 
+</script> 
+<script src="imagelogic.js"></script>
+</body> 
+</html>

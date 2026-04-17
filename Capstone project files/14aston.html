@@ -1,0 +1,217 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Drift Deck | Aston Martin</title> 
+    <link rel="stylesheet" href="style.css"> 
+    <style>
+        :root { 
+            --accent: #006a4e; /* British Racing Green */
+            --gold: #c5a059;
+        } 
+        
+        body {
+            background: radial-gradient(circle at center, #001a13, #000);
+            background-attachment: fixed;
+        }
+
+        /* SIMPLE & ELEGANT: Minimalist Border-Bottom */
+        .car-option {
+            padding: 20px 25px; /* Larger box size for premium feel */
+            margin-bottom: 5px;
+            display: block;
+            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .car-option.active {
+            background: transparent;
+            color: var(--gold);
+            border-bottom: 2px solid var(--gold);
+            padding-left: 40px; /* Elegant slide-in effect */
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Fully transparent details area */
+        .details-area {
+            background: transparent;
+            border: none;
+            outline: none;
+        }
+
+        .reserve-btn {
+            background: var(--accent);
+            color: white;
+            border: 1px solid var(--gold);
+            border-radius: 0; /* Sharp corners for a formal look */
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+    </style>
+    <link rel="stylesheet" href="mobileview.css">
+    <script src="testdrive.js"></script>
+</head> 
+<body> 
+
+<header> 
+    <nav class="nav-links"> 
+        <a href="cpp.html" class="nav-item">Home</a> 
+        <a href="#" class="nav-item">About</a> 
+    </nav> 
+
+    <div class="title-group"> 
+        <h1 class="logo-main">Drift Deck</h1> 
+        <div class="subtitle">Power, Beauty, Soul</div> 
+    </div> 
+
+    <nav class="nav-right"> 
+        <a href="#" id="garage-display" class="nav-item">garage (0)</a> 
+    </nav> 
+</header> 
+
+<main class="dashboard"> 
+    <div id="mobile-image-wrapper">
+    <img id="mobile-car-img" src="" alt="Mobile Car View">
+</div>
+    <section class="preview-pane"> 
+        <img id="car-img" src="" alt="Aston Martin Showroom"> 
+    </section> 
+
+    <section class="sidebar"> 
+        <div id="list"></div> 
+        <div id="details" class="details-area"></div> 
+    </section> 
+</main> 
+
+<script> 
+    let currentSelection = 0;
+
+    const fleet = [ 
+    {  
+        name: "DBS 770 Ultimate",  
+        fullPrice: "₹5,50,00,000",  
+        monthly: "₹3,15,000/month",
+        power: "715 hp",  
+        acc: "3.2s",  
+        range: "340 km/h", 
+        drive: "Rear-Wheel Drive",
+        img: "https://i.pinimg.com/736x/96/13/f4/9613f45538e330a72963afb4efc1f18d.jpg"  
+    }, 
+    {  
+        name: "Valkyrie",  
+        fullPrice: "₹30,00,00,000",  
+        monthly: "₹12,00,000/month",
+        power: "1160 hp",  
+        acc: "2.5s",  
+        range: "400 km/h+", 
+        drive: "Mid-Engine Hybrid",
+        img: "https://i.pinimg.com/736x/96/31/f4/9631f47cf5ec85bf96da3bff6b4ea746.jpg"  
+    }, 
+    {  
+        name: "Valhalla",  
+        fullPrice: "₹15,00,00,000",  
+        monthly: "₹8,50,000/month",
+        power: "998 hp",  
+        acc: "2.5s",  
+        range: "350 km/h", 
+        drive: "E-AWD Hybrid",
+        img: "https://i.pinimg.com/1200x/f6/57/67/f657670f46f072f5f408d87975a18768.jpg"  
+    },
+    {  
+        name: "DB12",  
+        fullPrice: "₹4,80,00,000",  
+        monthly: "₹1,80,000/month",
+        power: "671 hp",  
+        acc: "3.5s",  
+        range: "325 km/h", 
+        drive: "Rear-Wheel Drive",
+        img: "https://i.pinimg.com/1200x/ac/f2/1d/acf21d60fd4a095b6cc4221919daeeea.jpg"  
+    }
+];
+    function renderList() { 
+        document.getElementById('list').innerHTML = fleet.map((car, i) => ` 
+            <div class="car-option" onmouseenter="updateView(${i}, this)" onclick="updateView(${i}, this)"> 
+                ${car.name} 
+            </div> 
+        `).join(''); 
+    } 
+
+    function updateView(index, el) { 
+    currentSelection = index;
+    document.querySelectorAll('.car-option').forEach(opt => opt.classList.remove('active')); 
+    if(el) el.classList.add('active'); 
+
+    const car = fleet[index]; 
+    document.getElementById('car-img').src = car.img; 
+
+    document.getElementById('details').innerHTML = `
+        <h2 class="car-main-title">${car.name}</h2>
+        <div class="price-section">
+            <span class="full-price-tag">${car.fullPrice}</span>
+            <span class="monthly-tag">${car.monthly}</span>
+        </div>
+        <div class="action-buttons">
+            <button class="reserve-btn" onclick="reserveCar()">Book Now</button>
+            <button class="test-drive-btn" onclick="scheduleTestDrive()">Test Drive</button>
+        </div>
+        <div class="spec-grid">
+            <div class="spec-item">
+                <p class="spec-label">Peak Power</p>
+                <p class="spec-value">${car.power}</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Acceleration</p>
+                <p class="spec-value">${car.acc}</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Est. Range</p>
+                <p class="spec-value">${car.range}</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Drivetrain</p>
+                <p class="spec-value">${car.drive}</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Top Speed</p>
+                <p class="spec-value">Ultimate Luxury</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Warranty</p>
+                <p class="spec-value">3yr / Unlimited</p> 
+            </div>
+        </div>
+    `;
+}
+    function addTogarage() { 
+        const car = fleet[currentSelection]; 
+        let garage = JSON.parse(localStorage.getItem('driftDeckgarage')) || []; 
+        garage.push(car); 
+        localStorage.setItem('driftDeckgarage', JSON.stringify(garage)); 
+        updategarageCount(); 
+        alert(`${car.name} is now in your collection, Mr. Bond.`); 
+    } 
+    function scheduleTestDrive() {
+    // Your luxury popup logic here
+    const modal = document.getElementById('testDriveModal');
+    if (modal) modal.style.display = 'flex';
+}
+    function updategarageCount() { 
+        const garage = JSON.parse(localStorage.getItem('driftDeckgarage')) || []; 
+        const garageDisplay = document.getElementById('garage-display'); 
+        if(garageDisplay) garageDisplay.innerText = `garage (${garage.length})`; 
+    }
+function reserveCar() {
+    const selectedCar = fleet[currentSelection];
+    // This saves the Porsche to the same place the Tesla page uses
+    localStorage.setItem('pendingReservation', JSON.stringify(selectedCar));
+    window.location.href = 'checkout.html';
+}
+    renderList(); 
+    updateView(0, document.querySelector('.car-option')); 
+    updategarageCount();
+</script> 
+<script src="imagelogic.js"></script>
+</body> 
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Fleet | Drift Deck Garage</title>
+    <style>
+        :root {
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
+            --accent: #ffffff;
+            --danger: #ff4d4d;
+        }
+
+        body {
+            background: radial-gradient(circle at top, #1a1a1a, #000);
+            color: white;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Navigation Header */
+        header {
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-section {
+            text-align: center;
+            padding: 60px 20px 30px;
+        }
+
+        .header-section h1 {
+            font-size: 3.5rem;
+            letter-spacing: 12px;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin: 0;
+            background: linear-gradient(to bottom, #fff, #666);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Garage Grid */
+        .garage-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 40px;
+            padding: 40px 20px;
+        }
+
+        /* Asset Card Styling */
+        .asset-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            position: relative;
+        }
+
+        .asset-card:hover {
+            transform: translateY(-15px);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+        }
+
+        .asset-img {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            transition: 0.6s;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .asset-card:hover .asset-img {
+            transform: scale(1.08);
+        }
+
+        .asset-details {
+            padding: 30px;
+        }
+
+        .asset-tag {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #00ff88;
+            margin-bottom: 10px;
+            display: block;
+            font-weight: bold;
+        }
+
+        .asset-name {
+            font-size: 1.8rem;
+            margin: 0 0 10px 0;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .asset-price {
+            font-size: 1.2rem;
+            color: #ddd;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .asset-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            opacity: 0.4;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+            margin-bottom: 25px;
+        }
+
+        /* Cancel Button Styling */
+        .cancel-btn {
+            width: 100%;
+            padding: 14px;
+            background: transparent;
+            color: var(--danger);
+            border: 1px solid rgba(255, 77, 77, 0.3);
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .cancel-btn:hover {
+            background: rgba(255, 77, 77, 0.1);
+            border-color: var(--danger);
+            box-shadow: 0 0 20px rgba(255, 77, 77, 0.2);
+            color: #ff3333;
+        }
+
+        /* CUSTOM DIALOG BOX (MODAL) STYLES */
+        .modal-overlay {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-box {
+            background: #111;
+            border: 1px solid var(--border);
+            padding: 40px;
+            border-radius: 30px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+
+        .modal-box h2 {
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            color: var(--danger);
+        }
+
+        .modal-box p {
+            opacity: 0.6;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .btn-confirm {
+            background: var(--danger);
+            color: white;
+            border: none;
+        }
+
+        .btn-confirm:hover { background: #cc0000; }
+
+        .btn-cancel {
+            background: transparent;
+            color: white;
+            border-color: var(--border);
+        }
+
+        .btn-cancel:hover { background: rgba(255,255,255,0.05); }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* States & Utilities */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 150px 20px;
+            opacity: 0.3;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            opacity: 0.7;
+            transition: 0.3s;
+        }
+
+        .nav-link:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="cpp.html" class="nav-link">← SHOWROOM</a>
+        <div style="letter-spacing: 4px; font-weight: bold; font-size: 0.8rem;">DRIFT DECK</div>
+        <div id="garage-count-header" style="opacity: 0.6;">(0) ASSETS</div>
+    </header>
+
+    <div class="header-section">
+        <h1>Private Fleet</h1>
+        <p style="opacity: 0.4; letter-spacing: 4px; font-size: 0.8rem;">AUTHENTICATED RESERVATIONS & SECURED UNITS</p>
+    </div>
+
+    <div class="garage-grid" id="garage-grid"></div>
+
+    <div id="confirm-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h2>CANCEL RESERVATION?</h2>
+            <p>You are about to release your priority allocation. This action cannot be undone once the asset is returned to the global pool.</p>
+            <div class="modal-buttons">
+                <button class="modal-btn btn-cancel" onclick="closeModal()">KEEP ASSET</button>
+                <button class="modal-btn btn-confirm" id="confirm-delete-btn">RELEASE UNIT</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let indexToDelete = null;
+
+        function loadFleet() {
+            const booked = JSON.parse(localStorage.getItem('bookedCars')) || [];
+            const grid = document.getElementById('garage-grid');
+            const headerCount = document.getElementById('garage-count-header');
+
+            headerCount.innerText = `(${booked.length}) ASSETS`;
+
+            if (booked.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <h2 style="font-size: 2rem; letter-spacing: 5px;">GARAGE VACANT</h2>
+                        <p>No high-performance units detected. Return to the showroom to secure an asset.</p>
+                        <br>
+                        <a href="cpp.html" style="color: white; border-bottom: 1px solid white; text-decoration: none; padding-bottom: 5px;">Visit Showroom</a>
+                    </div>`;
+                return;
+            }
+
+            grid.innerHTML = booked.map((car, index) => `
+                <div class="asset-card">
+                    <img src="${car.img}" class="asset-img" alt="${car.name}">
+                    <div class="asset-details">
+                        <span class="asset-tag">Ownership Confirmed</span>
+                        <h2 class="asset-name">${car.name}</h2>
+                        <span class="asset-price">${car.fullPrice}</span>
+                        
+                        <div class="asset-meta">
+                            <span>REF: ${car.bookingID || 'DD-' + Math.floor(Math.random()*1000)}</span>
+                            <span>${car.date || 'RECENTLY BOOKED'}</span>
+                        </div>
+                        
+                        <button class="cancel-btn" onclick="openModal(${index})">
+                            Cancel Reservation
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // CUSTOM MODAL FUNCTIONS
+        function openModal(index) {
+            indexToDelete = index;
+            document.getElementById('confirm-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            indexToDelete = null;
+            document.getElementById('confirm-modal').style.display = 'none';
+        }
+
+        // Handle the actual deletion
+        document.getElementById('confirm-delete-btn').onclick = function() {
+            if (indexToDelete !== null) {
+                let booked = JSON.parse(localStorage.getItem('bookedCars')) || [];
+                booked.splice(indexToDelete, 1);
+                localStorage.setItem('bookedCars', JSON.stringify(booked));
+                loadFleet();
+                closeModal();
+            }
+        };
+
+        window.onload = loadFleet;
+    </script>
+</body>
+</html>
