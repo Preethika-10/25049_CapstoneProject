@@ -1,0 +1,192 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Drift Deck | Mercedes-Benz</title> 
+    <link rel="stylesheet" href="style.css"> 
+    <style>
+        :root { 
+            --accent: #00A19B; /* Mercedes Petronas Teal */
+            --silver: #A6A6A6;
+        } 
+        
+        /* Unique Mercedes background */
+        body {
+            background: radial-gradient(circle at center, #111, #000);
+        }
+
+        .car-option.active {
+            background: linear-gradient(90deg, var(--accent), #004d4a);
+            color: white;
+            border-left: 5px solid var(--silver);
+        }
+        
+    </style>
+    <link rel="stylesheet" href="mobileview.css">
+    <script src="testdrive.js"></script>
+</head> 
+<body> 
+
+<header> 
+    <nav class="nav-links"> 
+        <a href="cpp.html" class="nav-item">Home</a> 
+        <a href="about.html" class="nav-item">About</a> 
+    </nav> 
+
+    <div class="title-group"> 
+        <h1 class="logo-main">Drift Deck</h1> 
+        <div class="subtitle">Own the Road. Rule the Moment.</div> 
+    </div> 
+
+    <nav class="nav-right"> 
+        <a href="garage.html" id="garage-display" class="nav-item">garage (0)</a> 
+    </nav> 
+</header> 
+
+<main class="dashboard"> 
+    <div id="mobile-image-wrapper">
+    <img id="mobile-car-img" src="" alt="Mobile Car View">
+</div>
+    <section class="preview-pane"> 
+        <img id="car-img" src="" alt="Mercedes Showroom"> 
+    </section> 
+
+    <section class="sidebar"> 
+        <div id="list"></div> 
+        <div id="details" class="details-area"></div> 
+    </section> 
+</main> 
+
+<script> 
+    let currentSelection = 0;
+const fleet = [ 
+    {  
+        name: "AMG GT 63 S",  
+        fullPrice: "₹2,70,00,000",  
+        monthly: "₹1,45,000/month",
+        power: "630 hp",  
+        acc: "3.1s",  
+        range: "315 km/h", 
+        drive: "AMG Performance 4MATIC+",
+        img: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?q=80&w=2000&auto=format&fit=crop"  
+    }, 
+    {  
+        name: "S-Class Maybach",  
+        fullPrice: "₹3,40,00,000",  
+        monthly: "₹2,10,000/month",
+        power: "496 hp",  
+        acc: "4.7s",  
+        range: "250 km/h", 
+        drive: "4MATIC All-Wheel Drive",
+        img: "https://images.unsplash.com/photo-1620891549027-942fdc95d3f5?q=80&w=2000&auto=format&fit=crop"  
+    }, 
+    {  
+        name: "AMG SL 63 Roadster",  
+        fullPrice: "₹2,35,00,000",  
+        monthly: "₹1,60,000/month",
+        power: "577 hp",  
+        acc: "3.6s",  
+        range: "315 km/h", 
+        drive: "4MATIC+ Performance",
+        img: "https://i.pinimg.com/736x/78/c0/f7/78c0f7e0233b585771ba8187059b8cae.jpg"  
+    },
+    {  
+        name: "G-Wagon AMG G 63",  
+        fullPrice: "₹2,55,00,000",  
+        monthly: "₹1,85,000/month",
+        power: "577 hp",  
+        acc: "4.5s",  
+        range: "220 km/h", 
+        drive: "AMG Performance 4WD",
+        img: "https://images.unsplash.com/photo-1520031441872-265e4ff70366?q=80&w=2000&auto=format&fit=crop"  
+    },
+    {  
+        name: "EQS 580 (Electric)",  
+        fullPrice: "₹1,62,00,000",  
+        monthly: "₹1,20,000/month",
+        power: "516 hp",  
+        acc: "4.3s",  
+        range: "857 km", 
+        drive: "4MATIC All-Wheel Drive",
+        img: "https://i.pinimg.com/736x/aa/3d/1a/aa3d1a06cae0808e5c7d19b76c966b3e.jpg"  
+    }
+];
+    function renderList() { 
+        document.getElementById('list').innerHTML = fleet.map((car, i) => ` 
+            <div class="car-option" onmouseenter="updateView(${i}, this)" onclick="updateView(${i}, this)"> 
+                ${car.name} 
+            </div> 
+        `).join(''); 
+    } 
+function updateView(index, el) { 
+    currentSelection = index;
+    document.querySelectorAll('.car-option').forEach(opt => opt.classList.remove('active')); 
+    if(el) el.classList.add('active'); 
+
+    const car = fleet[index]; 
+    document.getElementById('car-img').src = car.img; 
+
+    document.getElementById('details').innerHTML = `
+        <h2 class="car-main-title">${car.name}</h2>
+        <div class="price-section">
+            <span class="full-price-tag">${car.fullPrice}</span>
+            <span class="monthly-tag">${car.monthly}</span>
+        </div>
+        <div class="action-buttons">
+            <button class="reserve-btn" onclick="reserveCar()">Book Now</button>
+            <button class="test-drive-btn" onclick="scheduleTestDrive()">Test Drive</button>
+        </div>
+        <div class="spec-grid">
+            <div class="spec-item">
+                <p class="spec-label">Peak Power</p>
+                <p class="spec-value">${car.power}</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Acceleration</p>
+                <p class="spec-value">${car.acc}</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Est. Range</p>
+                <p class="spec-value">${car.range}</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Drivetrain</p>
+                <p class="spec-value">${car.drive}</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Top Speed</p>
+                <p class="spec-value">Luxury Limited</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Warranty</p>
+                <p class="spec-value">3yr / Unlimited km</p> 
+            </div>
+        </div>
+    `;
+}
+
+        function scheduleTestDrive() {
+    // Your luxury popup logic here
+    const modal = document.getElementById('testDriveModal');
+    if (modal) modal.style.display = 'flex';
+}
+
+    function updategarageCount() { 
+        const garage = JSON.parse(localStorage.getItem('driftDeckgarage')) || []; 
+        const garageDisplay = document.getElementById('garage-display'); 
+        if(garageDisplay) garageDisplay.innerText = `garage (${garage.length})`; 
+    }
+function reserveCar() {
+    const selectedCar = fleet[currentSelection];
+    // This saves the Porsche to the same place the Tesla page uses
+    localStorage.setItem('pendingReservation', JSON.stringify(selectedCar));
+    window.location.href = 'checkout.html';
+}
+    renderList(); 
+    updateView(0, document.querySelector('.car-option')); 
+    updategarageCount();
+</script>
+<script src="imagelogic.js"></script> 
+</body> 
+</html>

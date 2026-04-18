@@ -1,0 +1,217 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Drift Deck | McLaren</title> 
+    <link rel="stylesheet" href="style.css"> 
+    <style>
+        :root { 
+            --accent: #ffb800; /* McLaren Papaya Orange */
+            --dark: #1b1b1b;
+        } 
+        
+        body {
+            background: radial-gradient(circle at top right, #2b1d0e, #000);
+            background-attachment: fixed;
+        }
+
+        /* COOL & SIMPLE: Aerodynamic Slant */
+        .car-option {
+            padding: 18px 25px; /* Bigger box size as we discussed */
+            margin-bottom: 8px;
+            display: block;
+            transition: 0.4s;
+            border-left: 3px solid transparent;
+        }
+
+        .car-option.active {
+            background: linear-gradient(90deg, rgba(255, 184, 0, 0.1), transparent);
+            color: #fff;
+            border-left: 5px solid var(--accent);
+            padding-left: 35px; /* Moves text slightly when active */
+            font-weight: bold;
+            font-style: italic; /* McLaren speed vibe */
+        }
+
+        /* Transparent details area */
+        .details-area {
+            background: transparent;
+            border: none;
+            outline: none;
+        }
+
+        .reserve-btn {
+            background: var(--accent);
+            color: #000; /* Orange looks best with black text */
+            font-weight: 800;
+            border: none;
+            border-radius: 4px;
+        }
+    </style>
+    <link rel="stylesheet" href="mobileview.css">
+    <script src="testdrive.js"></script>
+</head> 
+<body> 
+
+<header> 
+    <nav class="nav-links"> 
+        <a href="cpp.html" class="nav-item">Home</a> 
+        <a href="#" class="nav-item">About</a> 
+    </nav> 
+
+    <div class="title-group"> 
+        <h1 class="logo-main">Drift Deck</h1> 
+        <div class="subtitle">Designed for the Track</div> 
+    </div> 
+
+    <nav class="nav-right"> 
+        <a href="#" id="garage-display" class="nav-item">garage (0)</a> 
+    </nav> 
+</header> 
+
+<main class="dashboard"> 
+    <div id="mobile-image-wrapper">
+    <img id="mobile-car-img" src="" alt="Mobile Car View">
+</div>
+    <section class="preview-pane"> 
+        <img id="car-img" src="" alt="McLaren Showroom"> 
+    </section> 
+
+    <section class="sidebar"> 
+        <div id="list"></div> 
+        <div id="details" class="details-area"></div> 
+    </section> 
+</main> 
+
+<script> 
+    let currentSelection = 0;
+
+    const fleet = [ 
+    {  
+        name: "750S Spider",  
+        fullPrice: "₹5,90,00,000",  
+        monthly: "₹2,80,000/month",
+        power: "740 hp",  
+        acc: "2.8s",  
+        range: "332 km/h", 
+        drive: "Rear-Wheel Drive",
+        img: "https://i.pinimg.com/1200x/42/5c/9e/425c9ec66b3aa88c5c0f50c333284813.jpg"  
+    }, 
+    {  
+        name: "McLaren P1",  
+        fullPrice: "₹12,00,00,000",  
+        monthly: "₹8,50,000/month",
+        power: "903 hp",  
+        acc: "2.7s",  
+        range: "350 km/h", 
+        drive: "Rear-Wheel Drive (Hybrid)",
+        img: "https://i.pinimg.com/736x/51/b6/bd/51b6bdff8940e4b0ec2f4080ebcfbee7.jpg"
+    }, 
+    {  
+        name: "McLaren Senna",  
+        fullPrice: "₹10,00,00,000",  
+        monthly: "₹7,20,000/month",
+        power: "789 hp",  
+        acc: "2.8s",  
+        range: "335 km/h", 
+        drive: "Rear-Wheel Drive",
+        img: "https://i.pinimg.com/1200x/38/49/40/384940be5d52a6cb12cd1a706a342432.jpg"  
+    },
+    {  
+        name: "Artura (Hybrid)",  
+        fullPrice: "₹4,20,00,000",  
+        monthly: "₹1,45,000/month",
+        power: "671 hp",  
+        acc: "3.0s",  
+        range: "330 km/h", 
+        drive: "Rear-Wheel Drive (Hybrid)",
+        img: "https://i.pinimg.com/736x/24/14/e8/2414e893ccdcbc1b5b1d49a3f09cebfd.jpg"  
+    }
+];
+function renderList() { 
+        document.getElementById('list').innerHTML = fleet.map((car, i) => ` 
+            <div class="car-option" onmouseenter="updateView(${i}, this)" onclick="updateView(${i}, this)"> 
+                ${car.name} 
+            </div> 
+        `).join(''); 
+    } 
+
+    function updateView(index, el) { 
+    currentSelection = index;
+    document.querySelectorAll('.car-option').forEach(opt => opt.classList.remove('active')); 
+    if(el) el.classList.add('active'); 
+
+    const car = fleet[index]; 
+    document.getElementById('car-img').src = car.img; 
+
+    document.getElementById('details').innerHTML = `
+        <h2 class="car-main-title">${car.name}</h2>
+        <div class="price-section">
+            <span class="full-price-tag">${car.fullPrice}</span>
+            <span class="monthly-tag">${car.monthly}</span>
+        </div>
+        <div class="action-buttons">
+            <button class="reserve-btn" onclick="reserveCar()">Book Now</button>
+            <button class="test-drive-btn" onclick="scheduleTestDrive()">Test Drive</button>
+        </div>
+        <div class="spec-grid">
+            <div class="spec-item">
+                <p class="spec-label">Peak Power</p>
+                <p class="spec-value">${car.power}</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Acceleration</p>
+                <p class="spec-value">${car.acc}</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Est. Range</p>
+                <p class="spec-value">${car.range}</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Drivetrain</p>
+                <p class="spec-value">${car.drive}</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Top Speed</p>
+                <p class="spec-value">Ultimate Series</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Warranty</p>
+                <p class="spec-value">3yr / Unlimited km</p> 
+            </div>
+        </div>
+    `;
+}
+
+    function addTogarage() { 
+        const car = fleet[currentSelection]; 
+        let garage = JSON.parse(localStorage.getItem('driftDeckgarage')) || []; 
+        garage.push(car); 
+        localStorage.setItem('driftDeckgarage', JSON.stringify(garage)); 
+        updategarageCount(); 
+        alert(`${car.name} added. Prepare for G-force.`); 
+    } 
+    function scheduleTestDrive() {
+    // Your luxury popup logic here
+    const modal = document.getElementById('testDriveModal');
+    if (modal) modal.style.display = 'flex';
+}
+    function updategarageCount() { 
+        const garage = JSON.parse(localStorage.getItem('driftDeckgarage')) || []; 
+        const garageDisplay = document.getElementById('garage-display'); 
+        if(garageDisplay) garageDisplay.innerText = `garage (${garage.length})`; 
+    }
+function reserveCar() {
+    const selectedCar = fleet[currentSelection];
+    // This saves the Porsche to the same place the Tesla page uses
+    localStorage.setItem('pendingReservation', JSON.stringify(selectedCar));
+    window.location.href = 'checkout.html';
+}
+    renderList(); 
+    updateView(0, document.querySelector('.car-option')); 
+    updategarageCount();
+</script> 
+<script src="imagelogic.js"></script>
+</body> 
+</html>

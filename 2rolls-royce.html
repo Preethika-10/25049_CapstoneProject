@@ -1,0 +1,203 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Drift Deck | Rolls-Royce</title> 
+    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="mobileview.css">
+    <script src="testdrive.js"></script>
+</head> 
+
+<body> 
+
+<header> 
+    <nav class="nav-links"> 
+        <a href="cpp.html" class="nav-item">Home</a> 
+        <a href="#" class="nav-item">About</a> 
+    </nav> 
+
+    <div class="title-group"> 
+        <h1 class="logo-main">Drift Deck</h1> 
+        <div class="subtitle">Own the Road. Rule the Moment.</div> 
+    </div> 
+
+    <nav class="nav-right"> 
+        <a href="#" id="garage-display" class="nav-item">garage (0)</a> 
+    </nav> 
+</header> 
+
+<main class="dashboard"> 
+    <div id="mobile-image-wrapper">
+    <img id="mobile-car-img" src="" alt="Mobile Car View">
+</div>
+    <section class="preview-pane"> 
+        <img id="car-img" src="" alt="Rolls-Royce"> 
+    </section> 
+
+    <section class="sidebar"> 
+        <div id="list"></div> 
+        <div id="details" class="details-area"></div> 
+    </section> 
+</main> 
+
+<script> 
+// FIX 2: Initialize currentSelection at the top
+let currentSelection = 0;
+const fleet = [ 
+    {  
+        name: "Phantom Series II",  
+        fullPrice: "₹10,50,00,000",  
+        monthly: "₹4,10,250/month",
+        power: "563 hp",  
+        acc: "5.1s",  
+        range: "250 km/h", 
+        drive: "Rear-Wheel Drive",
+        img: "https://i.pinimg.com/1200x/07/c0/a7/07c0a744ff0415a96e34fa2053f9b970.jpg"  
+    }, 
+    {  
+        name: "Spectre (Electric)",  
+        fullPrice: "₹7,50,00,000",  
+        monthly: "₹3,50,000/month",
+        power: "584 hp",  
+        acc: "4.4s",  
+        range: "530 km (Electric)", 
+        drive: "All-Wheel Drive",
+        img: "https://i.pinimg.com/736x/00/71/0c/00710c27f5ace34d718d5c2a647cca38.jpg"  
+    }, 
+    {  
+        name: "Cullinan Black Badge",  
+        fullPrice: "₹8,20,00,000",  
+        monthly: "₹3,85,000/month",
+        power: "592 hp",  
+        acc: "4.9s",  
+        range: "250 km/h", 
+        drive: "All-Wheel Drive",
+        img: "https://i.pinimg.com/736x/45/bf/b9/45bfb9c3a28b8cf7f3680e76ceaf5ec6.jpg"  
+    },
+    {  
+        name: "Ghost Prism",  
+        fullPrice: "₹7,20,00,000",  
+        monthly: "₹3,15,00,000/month",
+        power: "563 hp",  
+        acc: "4.6s",  
+        range: "250 km/h", 
+        drive: "All-Wheel Drive",
+        img: "https://i.pinimg.com/1200x/71/43/6c/71436c13f1806c2aa63525784c55c127.jpg"  
+    },
+    {  
+        name: "Dawn Silver Bullet",  
+        fullPrice: "₹6,80,00,000",  
+        monthly: "₹2,95,000/month",
+        power: "563 hp",  
+        acc: "4.9s",  
+        range: "250 km/h", 
+        drive: "Rear-Wheel Drive",
+        img: "https://i.pinimg.com/736x/21/f5/91/21f5915cdac1a1e6466d7bb9ebe1e2db.jpg"  
+    },
+    {
+        name: "Ghost Zenith",  
+        fullPrice: "₹6,50,00,000",  
+        monthly: "₹2,90,000/month",
+        power: "563 hp",  
+        acc: "4.8s",  
+        range: "250 km/h", 
+        drive: "All-Wheel Drive",
+        img: "https://i.pinimg.com/736x/c5/e7/bf/c5e7bfc08d744fa76e8a1dd244b57db5.jpg"  
+    }
+];
+function renderList() { 
+    
+    document.getElementById('list').innerHTML = fleet.map((car, i) => ` 
+        <div class="car-option"  
+                onmouseenter="updateView(${i}, this)"  
+                onclick="updateView(${i}, this)"> 
+            ${car.name} 
+        </div> 
+    `).join(''); 
+}
+ 
+
+function updateView(index, el) { 
+    currentSelection = index;
+    document.querySelectorAll('.car-option').forEach(opt => opt.classList.remove('active')); 
+    if(el) el.classList.add('active'); 
+
+    const car = fleet[index]; 
+    document.getElementById('car-img').src = car.img; 
+
+    document.getElementById('details').innerHTML = `
+        <h2 class="car-main-title">${car.name}</h2>
+        <div class="price-section">
+            <span class="full-price-tag">${car.fullPrice}</span>
+            <span class="monthly-tag">${car.monthly}</span>
+        </div>
+        <div class="action-buttons">
+            <button class="reserve-btn" onclick="reserveCar()">Book Now</button>
+            <button class="test-drive-btn" onclick="scheduleTestDrive()">Test Drive</button>
+        </div>
+        <div class="spec-grid">
+            <div class="spec-item">
+                <p class="spec-label">Peak Power</p>
+                <p class="spec-value">${car.power}</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Acceleration</p>
+                <p class="spec-value">${car.acc}</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Est. Range</p>
+                <p class="spec-value">${car.range}</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Drivetrain</p>
+                <p class="spec-value">${car.drive}</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Top Speed</p>
+                <p class="spec-value">Effortless Speed</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Warranty</p>
+                <p class="spec-value">4yr / Unlimited</p> 
+            </div>
+        </div>
+    `;
+}
+function addTogarage() { 
+    const car = fleet[currentSelection]; 
+    let garage = JSON.parse(localStorage.getItem('driftDeckgarage')) || []; 
+    garage.push(car); 
+    localStorage.setItem('driftDeckgarage', JSON.stringify(garage)); 
+    
+    updategarageCount(); 
+    alert(`${car.name} has been added to your deck!`); 
+} 
+
+
+    function scheduleTestDrive() {
+    // Your luxury popup logic here
+    const modal = document.getElementById('testDriveModal');
+    if (modal) modal.style.display = 'flex';
+}
+
+function updategarageCount() { 
+    const garage = JSON.parse(localStorage.getItem('driftDeckgarage')) || []; 
+    const garageDisplay = document.getElementById('garage-display'); 
+    if(garageDisplay) { 
+        garageDisplay.innerText = `garage (${garage.length})`; 
+    } 
+}
+function reserveCar() {
+    const selectedCar = fleet[currentSelection];
+    // This saves the Porsche to the same place the Tesla page uses
+    localStorage.setItem('pendingReservation', JSON.stringify(selectedCar));
+    window.location.href = 'checkout.html';
+}
+renderList(); 
+updateView(0, document.querySelector('.car-option')); 
+updategarageCount(); // Loads existing garage count on refresh
+</script> 
+<script src="imagelogic.js"></script>
+</body> 
+</html>

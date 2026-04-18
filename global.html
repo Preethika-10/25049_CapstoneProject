@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drift Deck | Complete Global Fleet</title>
+    <style>
+        :root {
+            --glass: rgba(255, 255, 255, 0.1);
+            --accent: #007aff;
+            --text: #ffffff;
+            --bg: #050505;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            flex-direction: row; /* Default Laptop Layout */
+        }
+
+        /* Responsive Header */
+        .global-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--glass);
+            z-index: 2000;
+            box-sizing: border-box;
+        }
+
+        .logo-small { font-size: 1.1rem; letter-spacing: 2px; text-transform: uppercase; margin: 0; }
+        .home-btn { text-decoration: none; color: white; font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; opacity: 0.8; }
+        .home-btn:hover { color: var(--accent); opacity: 1; }
+
+        /* Sidebar - Laptop Only */
+        .sidebar {
+            width: 320px;
+            height: 100vh;
+            background: rgba(10, 10, 10, 0.95);
+            border-right: 1px solid var(--glass);
+            overflow-y: auto;
+            padding: 80px 20px 20px 20px; /* Space for fixed header */
+            box-sizing: border-box;
+        }
+
+        .car-option {
+            padding: 15px;
+            margin-bottom: 8px;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid transparent;
+        }
+
+        .car-option:hover { background: var(--glass); transform: translateX(5px); }
+        .car-option.active { background: var(--accent); box-shadow: 0 10px 20px rgba(0, 122, 255, 0.3); }
+        .car-option span { display: block; font-size: 0.7rem; text-transform: uppercase; font-weight: 700; opacity: 0.6; }
+
+        /* Main Viewport */
+        .main-display {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at center, #111 0%, #050505 100%);
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .glass-card {
+            width: 100%;
+            max-width: 1000px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--glass);
+            border-radius: 40px;
+            padding: 50px;
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .car-image-container { flex: 1.2; }
+        .car-image-container img { width: 100%; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.8)); transition: 0.6s ease; }
+        .details-container { flex: 1; }
+
+        .price-tag { font-size: 2.2rem; font-weight: 800; color: var(--accent); margin: 15px 0; }
+        .spec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 25px 0; }
+        .spec-item { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
+        .spec-label { font-size: 0.65rem; color: #888; text-transform: uppercase; }
+        .spec-value { font-weight: 600; font-size: 1rem; }
+
+        .btn-group { display: flex; gap: 15px; }
+        button { flex: 1; padding: 15px; border-radius: 12px; border: none; cursor: pointer; font-weight: 700; transition: 0.3s; }
+        .primary-btn { background: var(--accent); color: white; }
+
+        /* MOBILE ADJUSTMENTS */
+        @media (max-width: 768px) {
+            body { flex-direction: column; overflow-y: auto; height: auto; }
+            
+            .sidebar { display: none; } /* Hide sidebar on mobile */
+            
+            .global-nav { padding: 0 15px; }
+            .fleet-status { display: none; } /* Hide status on mobile to save space */
+
+            .main-display { padding: 80px 15px 40px 15px; }
+            
+            .glass-card { 
+                flex-direction: column; 
+                padding: 30px 20px; 
+                text-align: center;
+                border-radius: 24px;
+            }
+
+            .car-image-container { width: 100%; }
+            .spec-grid { gap: 8px; }
+            .btn-group { flex-direction: column; }
+            
+            h1 { font-size: 2rem !important; }
+            .price-tag { font-size: 1.8rem; }
+        }
+        /* Mobile Swipe Menu */
+.mobile-car-nav {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    background: rgba(10, 10, 10, 0.9);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--glass);
+    padding: 10px;
+    overflow-x: auto;
+    white-space: nowrap;
+    z-index: 1500;
+    gap: 10px;
+    scrollbar-width: none; /* Hide scrollbar for Firefox */
+}
+
+.mobile-car-nav::-webkit-scrollbar { display: none; } /* Hide scrollbar for Chrome/Safari */
+
+.mobile-nav-item {
+    display: inline-block;
+    padding: 8px 15px;
+    margin-right: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    border: 1px solid var(--glass);
+}
+
+.mobile-nav-item.active {
+    background: var(--accent);
+    border-color: var(--accent);
+}
+/* Hide scrollbar for Chrome, Safari and Opera */
+.sidebar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.sidebar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* Show it only on Mobile */
+@media (max-width: 768px) {
+    .mobile-car-nav {
+        display: block;
+    }
+    .main-display {
+        padding-top: 120px; /* Extra space so the car doesn't hide under the nav */
+    }
+}
+    </style>
+</head>
+<body>
+
+<header class="global-nav"> 
+    <nav class="nav-links"> 
+        <a href="cpp.html" class="home-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 5px;">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            </svg>
+            Home
+        </a> 
+    </nav> 
+    <h1 class="logo-small">Drift Deck</h1> 
+    <div class="nav-right">
+        <span class="fleet-status">Global Fleet v1.0</span>
+    </div>
+</header>
+<div class="mobile-car-nav" id="mobile-nav"></div>
+<div class="sidebar" id="car-list">
+    <h2>Fleet</h2>
+</div>
+
+<div class="main-display">
+    <div class="glass-card">
+        <div class="car-image-container">
+            <img id="car-img" src="" alt="Select a Car">
+        </div>
+        <div id="details" class="details-container"></div>
+    </div>
+</div>
+
+<script>
+    const globalFleet = [
+    { brand: "Bugatti", name: "Tourbillon", fullPrice: "₹32.0 Cr", power: "1800 hp", acc: "2.0s", range: "445 km/h", drive: "AWD Hybrid", img: "https://i.pinimg.com/1200x/fc/6c/a1/fc6ca113b4aed08d3e4f55e2dd81f068.jpg" },
+    { brand: "Porsche", name: "911 GT3 RS", fullPrice: "₹3.51 Cr", power: "518 hp", acc: "3.2s", range: "296 km/h", drive: "RWD", img: "https://i.pinimg.com/736x/c0/36/70/c0367069ce9df9ec8e5e90ee86074f50.jpg" },
+    { brand: "Aston Martin", name: "Valkyrie", fullPrice: "₹30.0 Cr", power: "1160 hp", acc: "2.5s", range: "400 km/h", drive: "Hybrid AWD", img: "https://i.pinimg.com/736x/96/31/f4/9631f47cf5ec85bf96da3bff6b4ea746.jpg" },
+    { brand: "Lamborghini", name: "Revuelto", fullPrice: "₹8.89 Cr", power: "1001 hp", acc: "2.5s", range: "350 km/h", drive: "V12 Hybrid", img: "https://i.pinimg.com/736x/a9/75/93/a97593b671c8eb411a50bcef89a063c0.jpg" },
+    { brand: "Ferrari", name: "SF90 Stradale", fullPrice: "₹7.50 Cr", power: "986 hp", acc: "2.5s", range: "340 km/h", drive: "PHEV AWD", img: "https://images.unsplash.com/photo-1592198084033-aade902d1aae?q=80&w=2000&auto=format&fit=crop" },
+    { brand: "Mercedes-AMG", name: "GT 63 S", fullPrice: "₹2.70 Cr", power: "630 hp", acc: "3.2s", range: "315 km/h", drive: "4MATIC+", img: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?q=80&w=2000&auto=format&fit=crop" },
+    { brand: "BMW", name: "M8 Competition", fullPrice: "₹2.44 Cr", power: "617 hp", acc: "3.0s", range: "305 km/h", drive: "M xDrive", img: "https://i.pinimg.com/736x/e6/f7/f5/e6f7f58da7d5ec6205633fd38a5ce7ff.jpg" },
+    { brand: "McLaren", name: "750S", fullPrice: "₹5.91 Cr", power: "740 hp", acc: "2.8s", range: "332 km/h", drive: "RWD", img: "https://i.pinimg.com/1200x/42/5c/9e/425c9ec66b3aa88c5c0f50c333284813.jpg" },
+    { brand: "Audi", name: "RS e-tron GT", fullPrice: "₹2.05 Cr", power: "637 hp", acc: "3.3s", range: "250 km/h", drive: "quattro", img: "https://i.pinimg.com/1200x/12/f3/48/12f34875f421384d568562b6e8f628eb.jpg" },
+    { brand: "Bentley", name: "Continental GT", fullPrice: "₹6.00 Cr", power: "650 hp", acc: "3.5s", range: "335 km/h", drive: "AWD", img: "https://i.pinimg.com/736x/42/52/5d/42525d3fca4905029b2b3b2402b7e1af.jpg" },
+    { brand: "Tesla", name: "Model S Plaid", fullPrice: "₹1.50 Cr", power: "1020 hp", acc: "1.9s", range: "322 km/h", drive: "Tri-Motor AWD", img: "https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Model-S-Main-Hero-Desktop-LHD.png" }
+];
+
+function init() {
+    const list = document.getElementById('car-list');
+    const mobileNav = document.getElementById('mobile-nav');
+
+    // Build both menus from the same data source
+    globalFleet.forEach((car, i) => {
+        // Create Sidebar Item (Laptop)
+        const opt = document.createElement('div');
+        opt.className = 'car-option';
+        opt.innerHTML = `<span>${car.brand}</span>${car.name}`;
+        opt.onclick = () => updateView(i);
+        list.appendChild(opt);
+
+        // Create Nav Item (Mobile)
+        const mobOpt = document.createElement('div');
+        mobOpt.className = 'mobile-nav-item';
+        mobOpt.innerText = car.name;
+        mobOpt.onclick = () => updateView(i);
+        mobileNav.appendChild(mobOpt);
+    });
+
+    // Load the first car by default
+    updateView(0);
+}
+
+function updateView(index) {
+    const car = globalFleet[index];
+    
+    // 1. Synchronize UI Selection
+    // Clear all active classes
+    document.querySelectorAll('.car-option, .mobile-nav-item').forEach(el => el.classList.remove('active'));
+    
+    // Add active to current index in both menus
+    const sidebarItems = document.querySelectorAll('.car-option');
+    const mobileItems = document.querySelectorAll('.mobile-nav-item');
+    if(sidebarItems[index]) sidebarItems[index].classList.add('active');
+    if(mobileItems[index]) mobileItems[index].classList.add('active');
+
+    // 2. Update Image with Fade
+    const carImg = document.getElementById('car-img');
+    carImg.style.opacity = 0;
+    setTimeout(() => {
+        carImg.src = car.img;
+        carImg.style.opacity = 1;
+    }, 200);
+
+    // 3. Update Details
+    document.getElementById('details').innerHTML = `
+        <p style="text-transform: uppercase; letter-spacing: 2px; font-size: 0.75rem; color: var(--accent); font-weight: 800; margin:0;">
+            ${car.brand}
+        </p>
+        <h1 style="font-size: 2.8rem; margin: 5px 0; line-height: 1; letter-spacing: -1px;">
+            ${car.name}
+        </h1>
+        <div class="price-tag">${car.fullPrice}</div>
+        
+        <div class="spec-grid">
+            <div class="spec-item">
+                <p class="spec-label">Power</p>
+                <p class="spec-value">${car.power}</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">0-100 km/h</p>
+                <p class="spec-value">${car.acc}</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Top Speed</p>
+                <p class="spec-value">${car.range}</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Drivetrain</p>
+                <p class="spec-value">${car.drive}</p>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            
+            
+<button class="primary-btn" onclick="prepareBooking(${index})">Book Now</button>
+        </div>
+    `;
+}
+function prepareBooking(index) {
+    // 1. Grab the specific car data from your globalFleet array
+    const selectedCar = globalFleet[index];
+    
+    // 2. Save it to the browser's memory (localStorage)
+    // Your checkout file is already programmed to look for 'pendingReservation'
+    localStorage.setItem('pendingReservation', JSON.stringify(selectedCar));
+    
+    // 3. Go to the checkout page
+    window.location.href = 'checkout.html'; 
+}
+
+window.onload = init;
+</script>
+</body>
+</html>

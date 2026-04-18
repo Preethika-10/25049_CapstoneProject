@@ -1,0 +1,204 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Drift Deck | Jaguar</title> 
+    <link rel="stylesheet" href="style.css"> 
+    <style>
+        :root { 
+            --accent: #003366; /* Midnight Navy */
+            --silver: #C0C0C0;
+        } 
+        
+        /* Deep blue gradient for a stealthy Jaguar look */
+        body {
+            background: radial-gradient(circle at bottom right, #001a33, #000);
+            background-attachment: fixed;
+        }
+
+        .car-option.active {
+            background: var(--accent);
+            color: #fff;
+            border-left: 4px solid var(--silver);
+            padding-left: 15px;
+            font-style: italic; /* Suggests the 'pace' of a Jaguar */
+        }
+
+        /* Ensuring total transparency as we discussed for Audi */
+        .details-area {
+            background: transparent;
+            backdrop-filter: none;
+            border: none;
+            outline: none;
+        }
+    </style>
+    <link rel="stylesheet" href="mobileview.css">
+<script src="testdrive.js"></script>
+</head> 
+<body> 
+
+<header> 
+    <nav class="nav-links"> 
+        <a href="cpp.html" class="nav-item">Home</a> 
+        <a href="#" class="nav-item">About</a> 
+    </nav> 
+
+    <div class="title-group"> 
+        <h1 class="logo-main">Drift Deck</h1> 
+        <div class="subtitle">Grace, Space, Pace</div> 
+    </div> 
+
+    <nav class="nav-right"> 
+        <a href="#" id="garage-display" class="nav-item">garage (0)</a> 
+    </nav> 
+</header> 
+
+<main class="dashboard"> 
+    <div id="mobile-image-wrapper">
+    <img id="mobile-car-img" src="" alt="Mobile Car View">
+</div>
+    <section class="preview-pane"> 
+        <img id="car-img" src="" alt="Jaguar Showroom"> 
+    </section> 
+
+    <section class="sidebar"> 
+        <div id="list"></div> 
+        <div id="details" class="details-area"></div> 
+    </section> 
+</main> 
+
+<script> 
+    let currentSelection = 0;
+
+    const fleet = [ 
+    {  
+        name: "F-Type R",  
+        fullPrice: "₹1,56,00,000",  
+        monthly: "₹1,10,000/month",
+        power: "575 hp",  
+        acc: "3.5s",  
+        range: "300 km/h", 
+        drive: "All-Wheel Drive",
+        img: "https://i.pinimg.com/736x/fc/89/b3/fc89b36ad5158e7310f2d3f96428b274.jpg"  
+    }, 
+    {  
+        name: "I-PACE (Electric)",  
+        fullPrice: "₹1,25,00,000",  
+        monthly: "₹85,000/month",
+        power: "394 hp",  
+        acc: "4.5s",  
+        range: "470 km", 
+        drive: "Electric AWD",
+        img: "https://i.pinimg.com/1200x/1b/1f/ef/1b1fef2ac6cfda5f0a2b15b13c540536.jpg"  
+    }, 
+    {  
+        name: "F-PACE SVR",  
+        fullPrice: "₹1,51,00,000",  
+        monthly: "₹98,000/month",
+        power: "542 hp",  
+        acc: "4.0s",  
+        range: "286 km/h", 
+        drive: "All-Wheel Drive",
+        img: "https://i.pinimg.com/1200x/08/3e/eb/083eebe216bf979992f6ea686ee5c768.jpg"  
+    },
+    {  
+        name: "XF Sedan",  
+        fullPrice: "₹76,00,000",  
+        monthly: "₹72,000/month",
+        power: "247 hp",  
+        acc: "6.5s",  
+        range: "250 km/h", 
+        drive: "Rear-Wheel Drive",
+        img: "https://i.pinimg.com/736x/68/e2/fb/68e2fb3fad8f7d1a1ecb43b19c2239a6.jpg"  
+    }
+];
+
+    function renderList() { 
+        document.getElementById('list').innerHTML = fleet.map((car, i) => ` 
+            <div class="car-option" onmouseenter="updateView(${i}, this)" onclick="updateView(${i}, this)"> 
+                ${car.name} 
+            </div> 
+        `).join(''); 
+    } 
+
+    function updateView(index, el) { 
+    currentSelection = index;
+    document.querySelectorAll('.car-option').forEach(opt => opt.classList.remove('active')); 
+    if(el) el.classList.add('active'); 
+
+    const car = fleet[index]; 
+    document.getElementById('car-img').src = car.img; 
+
+    document.getElementById('details').innerHTML = `
+        <h2 class="car-main-title">${car.name}</h2>
+        <div class="price-section">
+            <span class="full-price-tag" style="color: var(--silver);">${car.fullPrice}</span>
+            <span class="monthly-tag">${car.monthly}</span>
+        </div>
+        <div class="action-buttons">
+            <button class="reserve-btn" onclick="reserveCar()">Book Now</button>
+            <button class="test-drive-btn" onclick="scheduleTestDrive()">Test Drive</button>
+        </div>
+        <div class="spec-grid">
+            <div class="spec-item">
+                <p class="spec-label">Peak Power</p>
+                <p class="spec-value">${car.power}</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Acceleration</p>
+                <p class="spec-value">${car.acc}</p>
+            </div>
+
+            <div class="spec-item">
+                <p class="spec-label">Est. Range</p>
+                <p class="spec-value">${car.range}</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Drivetrain</p>
+                <p class="spec-value">${car.drive}</p>
+            </div>
+
+            <div class="spec-item">
+                <p class="spec-label">Top Speed</p>
+                <p class="spec-value">Limited</p>
+            </div>
+            <div class="spec-item">
+                <p class="spec-label">Warranty</p>
+                <p class="spec-value">5yr / 100k km</p> 
+            </div>
+        </div>
+    `;
+}
+    function addTogarage() { 
+        const car = fleet[currentSelection]; 
+        let garage = JSON.parse(localStorage.getItem('driftDeckgarage')) || []; 
+        garage.push(car); 
+        localStorage.setItem('driftDeckgarage', JSON.stringify(garage)); 
+        updategarageCount(); 
+        alert(`${car.name} added to your Jaguar fleet.`); 
+    } 
+        function scheduleTestDrive() {
+    // Your luxury popup logic here
+    const modal = document.getElementById('testDriveModal');
+    if (modal) modal.style.display = 'flex';
+}
+
+    function updategarageCount() { 
+        const garage = JSON.parse(localStorage.getItem('driftDeckgarage')) || []; 
+        const garageDisplay = document.getElementById('garage-display'); 
+        if(garageDisplay) garageDisplay.innerText = `garage (${garage.length})`; 
+    }
+function reserveCar() {
+    const selectedCar = fleet[currentSelection];
+    // This saves the Porsche to the same place the Tesla page uses
+    localStorage.setItem('pendingReservation', JSON.stringify(selectedCar));
+    window.location.href = 'checkout.html';
+}
+    renderList(); 
+    updateView(0, document.querySelector('.car-option')); 
+    updategarageCount();
+</script> 
+<script src="imagelogic.js"></script>
+</body> 
+</html>

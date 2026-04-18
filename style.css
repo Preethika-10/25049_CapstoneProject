@@ -1,0 +1,980 @@
+/* --- 1. GLOBAL SETTINGS --- */
+
+:root {
+
+    --accent: #00ff88;
+    /* The "Drift Deck" Green */
+
+    --bg: #080808;
+    /* Deep Black */
+
+    --card-bg: #111111;
+
+    --text-muted: #888;
+
+}
+
+
+
+
+* {
+
+    margin: 0;
+
+    padding: 0;
+
+    box-sizing: border-box;
+
+}
+
+
+
+
+body {
+
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+    background: var(--bg);
+
+    color: white;
+
+    line-height: 1.6;
+
+    overflow-x: hidden;
+
+}
+
+
+
+
+/* --- 2. THE NAVIGATION BAR (Universal) --- */
+
+header {
+
+    height: 90px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 0 50px;
+
+    background: rgba(0, 0, 0, 0.95);
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 1000;
+
+}
+
+
+
+
+.brand-logo {
+    width: 100px;            /* Fixed width for consistency */
+    height: 80px;            /* Fixed height to prevent 'jumping' layouts */
+    object-fit: contain;     /* CRITICAL: This keeps the logo's shape without stretching it */
+    display: block;
+    margin: 0 auto 15px auto;
+    
+    /* Ensuring visibility from start to end */
+    opacity: 1 !important;
+    filter: none !important;
+    background: transparent; /* Removes any 'patch' look behind the logo */
+}
+
+.title-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 150px;       /* Keeps the header height stable */
+}
+
+
+
+
+.logo-main {
+
+    font-size: 1.6rem;
+
+    letter-spacing: 6px;
+
+    text-transform: uppercase;
+
+    font-weight: 900;
+
+    background: linear-gradient(to right, #fff, #444);
+
+    -webkit-background-clip: text;
+
+    -webkit-text-fill-color: transparent;
+
+}
+
+
+
+
+.subtitle {
+
+    font-size: 0.6rem;
+
+    color: var(--text-muted);
+
+    letter-spacing: 3px;
+
+    text-transform: uppercase;
+
+    margin-top: -5px;
+
+}
+
+
+
+
+.nav-links,
+.nav-right {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 30px;
+
+}
+
+
+
+
+.nav-item {
+
+    text-decoration: none;
+
+    color: var(--text-muted);
+
+    font-size: 0.75rem;
+
+    font-weight: 600;
+
+    text-transform: uppercase;
+
+    letter-spacing: 1.5px;
+
+    transition: 0.3s ease;
+
+}
+
+
+
+
+.nav-item:hover {
+
+    color: var(--accent);
+
+}
+
+
+
+
+/* --- 3. HOME PAGE (BRAND SELECTION GRID) --- */
+
+.brand-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+
+    gap: 30px;
+
+    padding: 80px 10%;
+
+    max-width: 1400px;
+
+    margin: 0 auto;
+
+}
+
+
+
+
+.brand-card {
+
+    background: var(--card-bg);
+
+    border: 1px solid rgba(255, 255, 255, 0.03);
+
+    border-radius: 20px;
+
+    padding: 50px 30px;
+
+    text-decoration: none;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+
+}
+
+
+
+
+
+
+
+
+
+.brand-name {
+
+    color: white;
+
+    font-size: 1.2rem;
+
+    font-weight: 700;
+
+    margin-bottom: 8px;
+
+}
+
+
+
+
+.status-tag {
+
+    font-size: 0.65rem;
+
+    color: #444;
+
+    text-transform: uppercase;
+
+    letter-spacing: 2px;
+
+}
+
+
+
+
+.brand-card {
+    /* --- BASE STATE (Translucent) --- */
+    background: rgba(255, 255, 255, 0.05); /* See the video through this */
+    backdrop-filter: blur(15px); /* Professional frosted glass effect */
+    -webkit-backdrop-filter: blur(15px);
+    
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.4s ease; /* Smooth transition between glass and solid */
+}
+
+.brand-card:hover {
+    /* --- HOVER STATE (Opaque) --- */
+    background: #161616; /* Solid color hits when you hover */
+    backdrop-filter: none; /* Turn off blur since it's now solid */
+    -webkit-backdrop-filter: none;
+
+    transform: translateY(-12px) scale(1.05);
+    border-color: var(--accent); /* Brand blue/green lights up */
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+    filter: none;
+}
+
+/* Ensure the status tag still lights up */
+.brand-card:hover .status-tag {
+    color: var(--accent);
+}
+
+
+
+
+/* --- 4. BRAND PAGES (SHOWROOM DASHBOARD) --- */
+
+
+.dashboard {
+    display: flex;
+    flex-direction: row-reverse; /* This flips the sidebar to the left and image to the right */
+    height: calc(100vh - 90px);
+    overflow: hidden;
+    background: #000; /* Assuming a dark theme */
+}
+
+/* Adjust the borders to match the new position */
+
+
+.preview-pane {
+    flex: 1.2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+#car-img {
+    max-width: 85%;
+    transform: scaleX(-1); /* Optional: Flips the car to face the specifications */
+    filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.5));
+}
+.sidebar {
+    flex: 1.8;
+    background: var(--bg);
+    padding: 40px;
+    
+    /* 1. Enable scrolling */
+    overflow-y: auto; 
+    
+    /* 2. Move scrollbar to the left */
+    direction: rtl; /* Right-to-Left: moves scrollbar to the left side */
+    
+    /* 3. Reset the text back to normal */
+    text-align: left; 
+    
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* 4. Fix the content inside so it doesn't stay reversed */
+.sidebar > * {
+    direction: ltr; /* Left-to-Right: ensures text and specs read normally */
+}
+
+
+
+/* Optional: Make the scrollbar look sleek and dark */
+
+.sidebar::-webkit-scrollbar {
+
+    width: 4px;
+
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+
+    background: var(--accent);
+
+    border-radius: 10px;
+
+}
+
+
+
+
+/* --- The Tesla "Hollow" List Styling --- */
+
+.car-option {
+
+    font-size: 1.8rem;
+
+    font-weight: 800;
+
+    margin-bottom: 15px;
+
+    cursor: pointer;
+
+    color: transparent;
+
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
+
+    transition: 0.3s ease;
+
+    text-transform: uppercase;
+
+}
+
+
+
+
+.car-option:hover,
+.car-option.active {
+
+    color: white;
+
+    -webkit-text-stroke: 0px;
+
+    transform: translateX(15px);
+
+}
+
+
+
+
+/* --- Price & Specs --- */
+
+.details-area {
+
+    margin-top: 30px;
+
+    padding-top: 30px;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+
+}
+
+
+
+
+.full-price-tag {
+
+    font-size: 2rem;
+
+    font-weight: 800;
+
+    color: var(--accent);
+
+    display: block;
+
+}
+
+
+
+
+.rent-tag {
+
+    color: var(--text-muted);
+
+    font-size: 0.8rem;
+
+    margin-bottom: 25px;
+
+    display: block;
+
+}
+
+
+
+
+.book-btn {
+
+    width: 100%;
+
+    padding: 18px;
+
+    background: var(--accent);
+
+    color: #000;
+
+    border: none;
+
+    font-weight: 800;
+
+    text-transform: uppercase;
+
+    letter-spacing: 2px;
+
+    border-radius: 5px;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+
+    margin-bottom: 30px;
+
+}
+
+
+
+
+.book-btn:hover {
+
+    background: #fff;
+
+    transform: scale(1.02);
+
+}
+
+
+
+/* Container for the specs */
+.spec-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* Two equal columns */
+    gap: 20px 40px;
+    /* Space between rows and columns */
+    margin-top: 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 20px;
+}
+
+/* Individual spec block */
+.spec-item {
+    display: flex;
+    justify-content: space-between;
+    /* Pushes label left, value right */
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 8px;
+}
+
+/* The category (e.g., Transmission) */
+.spec-label {
+    color: #888;
+    /* Dimmer gray color */
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* The data (e.g., Automatic) */
+.spec-value {
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+
+/* --- 5. RESPONSIVE DESIGN (Mobile) --- */
+/* --- 5. UNIFIED RESPONSIVE DESIGN --- */
+
+@media (max-width: 768px) {
+    /* 1. Header & Navigation Adjustments */
+    header {
+        padding: 0 20px;
+        height: 70px;
+        justify-content: space-between;
+    }
+
+    .nav-links, .nav-right {
+        display: none !important; /* Hides desktop links */
+    }
+
+    .title-group {
+        flex: 1;
+        text-align: center;
+    }
+
+    .logo-main {
+        font-size: 1.1rem !important;
+        letter-spacing: 3px !important;
+    }
+
+    .subtitle {
+        font-size: 0.5rem;
+    }
+
+    /* 2. Layout Transformation */
+    .dashboard {
+        flex-direction: column; /* Stacks image and info */
+        height: auto;
+        overflow-y: visible;
+    }
+
+    /* 3. The Preview Pane (Car Image) */
+    .preview-pane {
+        width: 100%;
+        height: 300px; /* Fixed height for mobile focus */
+        padding: 20px;
+        background: radial-gradient(circle at center, #111 0%, #000 100%);
+    }
+
+    #car-img {
+        max-width: 100%;
+        height: auto;
+        transform: none; /* Reset the flip for better mobile viewing */
+    }
+
+    /* 4. Sidebar to Mobile UI Transformation */
+    .sidebar {
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 20px;
+        direction: ltr; /* Reset scrollbar direction for mobile */
+        overflow-y: visible;
+    }
+
+    /* Transform the car list into a horizontal scrollable menu */
+    #list {
+        display: flex;
+        overflow-x: auto;
+        gap: 15px;
+        padding-bottom: 15px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        scrollbar-width: none; /* Hides scrollbar on Firefox */
+    }
+
+    #list::-webkit-scrollbar {
+        display: none; /* Hides scrollbar on Chrome/Safari */
+    }
+
+    .car-option {
+        flex: 0 0 auto; /* Prevents text from shrinking */
+        font-size: 0.9rem;
+        margin-bottom: 0;
+        -webkit-text-stroke: 0.5px rgba(255, 255, 255, 0.4);
+    }
+
+    .car-option:hover, .car-option.active {
+        transform: scale(1.1);
+        border-left: none; /* Remove desktop border */
+        padding-left: 0;
+        color: var(--accent);
+    }
+
+    /* 5. Content & Buttons */
+    .car-main-title {
+        font-size: 1.8rem;
+        text-align: center;
+    }
+
+    .full-price-tag {
+        font-size: 1.5rem;
+        text-align: center;
+    }
+
+    .rent-tag {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .action-buttons {
+        flex-direction: column; /* Stack buttons for easy tapping */
+        gap: 12px;
+    }
+
+    .spec-grid {
+        grid-template-columns: 1fr; /* Single column for better readability on small screens */
+        gap: 10px;
+    }
+
+    .spec-item {
+        padding: 12px 0;
+    }
+}
+@media (max-width: 1024px) {
+
+    .dashboard {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .sidebar {
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .preview-pane {
+        height: 400px;
+    }
+
+    header {
+        padding: 0 20px;
+    }
+
+    .nav-links,
+    .nav-right {
+        display: none;
+    }
+
+    /* Simplified for mobile */
+
+}
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.reserve-btn {
+    flex: 1;
+    padding: 15px;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    font-weight: 800;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.test-drive-btn {
+    flex: 1;
+    padding: 15px;
+    background: transparent;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-weight: 800;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.test-drive-btn:hover {
+    background: white;
+    color: black;
+}
+
+.reserve-btn:hover {
+    background: white;
+    transform: scale(1.02);
+}
+.car-option.active {
+    color: var(--accent);
+    border-left: 4px solid var(--accent);
+    padding-left: 10px;
+    font-weight: bold;
+}
+
+
+/* Remove any hover effects that might be causing the "patchy" look */
+.brand-logo:hover {
+    opacity: 1;
+    filter: none;
+    transform: none; 
+}
+header {
+    display: flex;
+    justify-content: space-between; /* Pushes nav-links left, nav-right right */
+    align-items: center;            /* Centers everything vertically */
+    padding: 15px 40px;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    height: 80px;                  /* Give the header a fixed height to prevent sagging */
+}
+
+/* Ensure the left nav items are centered vertically */
+.nav-links {
+    display: flex;
+    gap: 25px;
+    align-items: center; 
+    flex: 1;                       /* Takes up equal space on the left */
+}
+
+/* Ensure the title group stays exactly in the middle */
+.title-group {
+    flex: 0;                       /* Don't let the title grow */
+    white-space: nowrap;           /* Prevent text wrapping */
+}
+
+/* Ensure the right nav items are centered vertically */
+.nav-right {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 1;                       /* Takes up equal space on the right */
+}
+
+.nav-item {
+    text-decoration: none;
+    color: white;
+    font-size: 0.9rem;
+    line-height: 1;                /* Forces text to stay in its line */
+    display: flex;
+    align-items: center;
+}
+@media (max-width: 768px) {
+    /* 1. Hide the fixed sidebar and make body vertical */
+    body {
+        flex-direction: column;
+        overflow-y: auto;
+        padding-top: 70px; /* Space for the fixed header */
+    }
+
+    .sidebar {
+        display: none; /* Hide the full list on mobile */
+    }
+
+    /* 2. Expand the header for mobile */
+    .global-nav {
+        padding: 0 20px;
+        height: 70px;
+    }
+
+    .logo-small {
+        font-size: 1rem;
+    }
+
+    /* 3. Make the "Back to Home" button cleaner */
+    .home-btn {
+        font-size: 0.75rem;
+    }
+
+    .home-btn svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    /* 4. Fix the Main Display Card */
+    .main-display {
+        padding: 15px;
+        height: auto;
+    }
+
+    .glass-card {
+        flex-direction: column; /* Stack image on top of text */
+        padding: 25px;
+        gap: 20px;
+        border-radius: 25px;
+    }
+
+    .car-image-container img {
+        width: 100%; /* Image fits screen width */
+    }
+
+    .car-main-title {
+        font-size: 1.8rem !important;
+    }
+
+    .spec-grid {
+        grid-template-columns: 1fr 1fr; /* Keep 2 columns, or use 1fr for even more space */
+        gap: 8px;
+    }
+
+    .btn-group {
+        flex-direction: column; /* Stack Book Now and Test Drive buttons */
+    }
+}
+@media (max-width: 768px) {
+    /* Hide the text links on mobile */
+    .nav-links {
+        display: none !important;
+    }
+    
+    /* Show the hamburger bars */
+    .menu-toggle {
+        display: flex !important;
+    }
+
+    /* Adjust logo size so it doesn't hit the icons */
+    .title-group h1 {
+        font-size: 1.2rem !important;
+        letter-spacing: 4px !important;
+    }
+}
+@media (max-width: 768px) {
+    /* 1. Reset Header for side-by-side layout */
+    header {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 0 15px !important;
+        height: 70px !important;
+    }
+
+    /* 2. Hide everything on the left to save space */
+    .nav-links, .subtitle {
+        display: none !important;
+    }
+
+    /* 3. Logo stays on the left */
+    .title-group {
+        text-align: left !important;
+        margin: 0 !important;
+        flex: 1;
+    }
+
+    .logo-main {
+        font-size: 1.1rem !important;
+        letter-spacing: 2px !important;
+    }
+
+    /* 4. Right side: Sports Car + Login Only */
+    .nav-right {
+        display: flex !important;
+        justify-content: flex-end !important;
+        align-items: center !important;
+        gap: 8px !important;
+        flex: 1.5; /* Gives slightly more room for two buttons */
+    }
+
+    /* 5. Style for both Sports Car and Login links */
+    .nav-right .nav-item, 
+    #auth-link, 
+    #logout-btn {
+        font-size: 0.65rem !important;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        white-space: nowrap;
+        padding: 6px 10px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
+        text-decoration: none;
+        color: #fff;
+        display: inline-block !important;
+    }
+
+    /* Ensure the Garage link/icon is hidden if it's interfering */
+    #garage-display, #garage-link {
+        display: none !important;
+    }
+}
+
+
+/* Darkens the video so your text and car names are readable */
+.video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Adjust 0.5 to make it darker/lighter */
+    z-index: -1;
+}
+/* 1. Desktop View (Default) */
+#video-bg-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    overflow: hidden;
+    background: #000;
+}
+
+#bg-video {
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+}
+
+/* 2. Mobile View Fix */
+@media (max-width: 768px) {
+    #video-bg-container {
+        /* Hide the video container entirely */
+        display: none; 
+    }
+
+    body {
+        /* Set a nice dark fallback so the site still looks luxury */
+        background: radial-gradient(circle at top left, #050a14, #000) !important;
+        background-attachment: fixed;
+    }
+}
+header {
+    /* Solid background to block the video */
+    background: #000000 !important; 
+    
+    /* Remove any transparency or blur inherited from other styles */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    
+    /* Ensure it stays on top of the video and cards */
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    
+    /* Optional: A very thin line at the bottom to separate it from the content */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* If you have a separate class for the nav area */
+.nav-links, .nav-right {
+    background: transparent; /* These should stay transparent so the header color shows through */
+}

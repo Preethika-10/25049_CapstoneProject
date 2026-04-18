@@ -1,0 +1,266 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Drift Deck | Tesla</title> 
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root { 
+            --accent: #e31937; /* Tesla Red */
+            --highlight: #ffffff;
+        }
+
+        body {
+            background: radial-gradient(circle at top left, #050a14, #000);
+        }
+
+        /* Slanted racing shape to match BMW style */
+        .car-option.active {
+            background: var(--accent);
+            color: #fff;
+            clip-path: polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%);
+            padding-left: 30px;
+            font-weight: 800;
+            border-left: 10px solid #fff; /* White accent for Tesla */
+            box-shadow: 10px 0 20px rgba(227, 25, 55, 0.4);
+        }
+
+        .details-area {
+            background: transparent;
+            border: none;
+            outline: none;
+        }
+
+        /* Digital 'HUD' look for price */
+        .full-price-tag {
+            font-family: 'Courier New', monospace;
+            color: var(--accent);
+            letter-spacing: 2px;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .reserve-btn {
+            background: linear-gradient(90deg, #ff4d4d, var(--accent));
+            border: none;
+            clip-path: polygon(0 0, 85% 0, 100% 100%, 0% 100%);
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+        }
+
+        .test-drive-btn {
+            cursor: pointer;
+        }
+    </style>
+    <link rel="stylesheet" href="mobileview.css">
+    <script src="testdrive.js"></script>
+</head> 
+<body> 
+
+<header> 
+    <nav class="nav-links"> 
+        <a href="cpp.html" class="nav-item">Home</a> 
+        <a href="#" class="nav-item">About</a> 
+    </nav> 
+
+    <div class="title-group"> 
+        <h1 class="logo-main">Drift Deck</h1> 
+        <div class="subtitle">Future of Velocity. Defined.</div> 
+    </div> 
+
+    <nav class="nav-right"> 
+        <a href="garage.html" id="garage-display" class="nav-item">garage (0)</a> 
+    </nav> 
+</header> 
+
+<main class="dashboard"> 
+    <div id="mobile-image-wrapper">
+        <img id="mobile-car-img" src="" alt="Mobile Car View">
+    </div>
+
+    <section class="preview-pane"> 
+        <img id="car-img" src="" alt="Tesla Showroom"> 
+    </section> 
+
+    <section class="sidebar"> 
+        <div id="list"></div> 
+        <div id="details" class="details-area"></div> 
+    </section> 
+</main> 
+
+<script> 
+    const fleet = [ 
+        {  
+            name: "Model S Plaid",  
+            fullPrice: "₹87,66,665",  
+            monthly: "₹1,25,000/month",
+            power: "1,020 hp",  
+            acc: "1.99s",  
+            range: "637 km", 
+            drive: "AWD Tri-Motor",
+            img: "https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Model-S-Main-Hero-Desktop-LHD.png"  
+        }, 
+        {  
+            name: "Model 3 Highland",  
+            fullPrice: "₹45,91,665",  
+            monthly: "₹65,000/month",
+            power: "510 hp",  
+            acc: "2.9s",  
+            range: "513 km", 
+            drive: "AWD Dual-Motor",
+            img: "https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Model-3-Main-Hero-Desktop-LHD.png"  
+        }, 
+        {  
+            name: "Model X Plaid",  
+            fullPrice: "₹79,31,665",  
+            monthly: "₹1,15,000/month",
+            power: "1,020 hp",  
+            acc: "2.5s",  
+            range: "543 km", 
+            drive: "AWD Tri-Motor",
+            img: "https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Model-X-Main-Hero-Desktop-LHD.png"  
+        }, 
+        {  
+            name: "Cybertruck Beast",  
+            fullPrice: "₹83,49,165",  
+            monthly: "₹1,40,000/month",
+            power: "845 hp",  
+            acc: "2.6s",  
+            range: "515 km", 
+            drive: "Cyber All-Wheel",
+            img: "https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Cybertruck-Main-Hero-Desktop.png"  
+        },
+        {  
+            name: "Model Y Performance",  
+            fullPrice: "₹42,99,415",  
+            monthly: "₹60,000/month",
+            power: "455 hp",  
+            acc: "3.5s",  
+            range: "458 km", 
+            drive: "AWD Dual-Motor",
+            img: "https://images.unsplash.com/photo-1619767886558-efdc259cde1a?q=80&w=2000&auto=format&fit=crop"  
+        }, 
+        {  
+            name: "Roadster 2.0",  
+            fullPrice: "₹1,67,00,000",  
+            monthly: "₹2,50,000/month",
+            power: "10k Nm Torque",  
+            acc: "1.9s",  
+            range: "1,000 km", 
+            drive: "All-Wheel Drive",
+            img: "https://images.unsplash.com/photo-1562911791-c7a97b729ec5?q=80&w=2000&auto=format&fit=crop"  
+        }
+    ];
+
+    let currentSelection = 0; 
+
+    function renderList() { 
+        // Mobile wrapper auto-injection (Matches BMW logic)
+        if (!document.getElementById('mobile-image-wrapper')) {
+            const wrapper = document.createElement('div');
+            wrapper.id = 'mobile-image-wrapper';
+            wrapper.innerHTML = `<img id="mobile-car-img" src="">`;
+            const dash = document.querySelector('.dashboard');
+            if(dash) dash.prepend(wrapper);
+        }
+
+        const listContainer = document.getElementById('list'); 
+        listContainer.innerHTML = fleet.map((car, i) => ` 
+            <div class="car-option" 
+                 onmouseenter="updateView(${i}, this)" 
+                 onclick="updateView(${i}, this)"> 
+                ${car.name} 
+            </div> 
+        `).join(''); 
+    } 
+
+    function updateView(index, el) { 
+        currentSelection = index; 
+        document.querySelectorAll('.car-option').forEach(opt => opt.classList.remove('active')); 
+        
+        if(el) {
+            el.classList.add('active'); 
+        } else {
+            const options = document.querySelectorAll('.car-option');
+            if(options[index]) options[index].classList.add('active');
+        }
+
+        const car = fleet[index]; 
+        
+        // Update main and mobile images
+        document.getElementById('car-img').src = car.img; 
+        const mobImg = document.getElementById('mobile-car-img');
+        if(mobImg) mobImg.src = car.img;
+
+        // Unified 6-item Grid Specification layout
+        document.getElementById('details').innerHTML = ` 
+            <h2 class="car-main-title">${car.name}</h2>
+            <div class="price-section">
+                <span class="full-price-tag">${car.fullPrice}</span>
+                <span class="monthly-tag">${car.monthly}</span>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="reserve-btn" onclick="reserveCar()">Book Now</button>
+                <button class="test-drive-btn" onclick="scheduleTestDrive()">Test Drive</button>
+            </div>
+            
+            <div class="spec-grid"> 
+                <div class="spec-item">
+                    <p class="spec-label">Peak Power</p>
+                    <p class="spec-value">${car.power}</p>
+                </div> 
+                <div class="spec-item">
+                    <p class="spec-label">Acceleration</p>
+                    <p class="spec-value">${car.acc}</p>
+                </div> 
+                <div class="spec-item">
+                    <p class="spec-label">Est. Range</p>
+                    <p class="spec-value">${car.range}</p>
+                </div> 
+                <div class="spec-item">
+                    <p class="spec-label">Drivetrain</p>
+                    <p class="spec-value">${car.drive}</p>
+                </div> 
+                <div class="spec-item">
+                    <p class="spec-label">Top Speed</p>
+                    <p class="spec-value">Insane Mode</p>
+                </div> 
+                <div class="spec-item">
+                    <p class="spec-label">Battery</p>
+                    <p class="spec-value">Long Range</p> 
+                </div> 
+            </div> 
+        `; 
+    }
+
+    function reserveCar() {
+        const selectedCar = fleet[currentSelection];
+        localStorage.setItem('pendingReservation', JSON.stringify(selectedCar));
+        window.location.href = 'checkout.html';
+    }
+
+    function scheduleTestDrive() {
+        const modal = document.getElementById('testDriveModal');
+        if (modal) modal.style.display = 'flex';
+    }
+
+    function updategarageCount() {
+        const garage = JSON.parse(localStorage.getItem('driftDeckgarage')) || [];
+        const display = document.getElementById('garage-display');
+        if (display) display.innerText = `garage (${garage.length})`;
+    }
+
+    // Initialize with timing safety (Matches BMW logic)
+    renderList(); 
+    updategarageCount(); 
+
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            updateView(0, document.querySelector('.car-option'));
+        }, 100);
+    });
+</script> 
+</body> 
+</html>
