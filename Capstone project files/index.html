@@ -1,0 +1,367 @@
+<!DOCTYPE html> 
+
+<html lang="en"> 
+
+<head> 
+
+    <meta charset="UTF-8"> 
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+
+    <title>Drift Deck</title> 
+
+    <link rel="stylesheet" href="style.css"> 
+    <style>@media (max-width: 768px) {
+    /* 1. Simplify the Header Container */
+    header {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 10px 20px !important;
+        height: 70px !important;
+        flex-direction: row !important; /* Forces side-by-side */
+    }
+
+    /* 2. Hide the middle/extra links */
+    .nav-links, .subtitle {
+        display: none !important;
+    }
+
+    /* 3. Style the Logo group to sit on the left */
+    .title-group {
+        text-align: left !important;
+        margin: 0 !important;
+        flex: 1;
+    }
+
+    .logo-main {
+        font-size: 1.2rem !important;
+        letter-spacing: 2px !important;
+        margin: 0 !important;
+        white-space: nowrap;
+    }
+
+    /* 4. Fix the Auth/Login section on the right */
+    .nav-right {
+        display: flex !important;
+        justify-content: flex-end !important;
+        align-items: center !important;
+        gap: 10px !important;
+        flex: 1;
+    }
+
+    /* 5. Clean up the Login button/User text appearance */
+    #auth-link, .user-name-text, #logout-btn {
+        font-size: 0.75rem !important;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 5px 10px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 4px;
+        white-space: nowrap;
+    }
+
+    /* 6. Fix the Brand Grid so it doesn't overflow */
+    .brand-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 15px !important;
+        padding: 20px !important;
+    }
+}</style>
+
+</head> 
+
+<body>
+    <div id="video-bg-container">
+    <video autoplay muted loop playsinline id="bg-video">
+        <source src="carvideo.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div class="video-overlay"></div>
+</div>
+<header> 
+    <nav class="nav-links"> 
+        <a href="cpp.html" class="nav-item">Home</a> 
+        <a href="global.html" class="nav-item">Sports Car</a> 
+        <a href="about.html" class="nav-item">About</a> 
+    </nav> 
+
+    <div class="title-group" style="text-align: center;"> 
+        <h1 class="logo-main">Drift Deck</h1> 
+        <div class="subtitle">Own the Road. Rule the Moment.</div> 
+    </div> 
+
+    <nav class="nav-right" id="auth-section">
+        <div id="user-display"></div>
+        <a href="garage.html" class="nav-item" id="garage-link" title="My Bookings">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            
+            </svg>
+        </a>
+        <a href="login.html" id="auth-link" class="nav-item">Login</a>
+    </nav>
+</header> 
+
+ 
+
+<main class="brand-grid"> 
+    
+
+    <a href="1bmw.html" class="brand-card"> 
+
+        <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/BMW.svg" alt="BMW" class="brand-logo"> 
+
+        <span class="brand-name">BMW</span> 
+
+        <span class="status-tag">Explore</span> 
+
+    </a> 
+    <a href="2rolls-royce.html" class="brand-card"> 
+
+        <img src="rolls-royce-logo.jpg" alt="rolls-royce" class="brand-logo"> 
+
+        <span class="brand-name">Rolls-Royce</span> 
+
+        <span class="status-tag">Explore</span> 
+
+    </a> 
+    <a href="3porsche.html" class="brand-card"> 
+        <img src="porsche-logo.jpg" class="brand-logo" alt="Porsche" class="brand-logo"> 
+
+        <span class="brand-name">Porsche</span> 
+
+        <span class="status-tag">Explore</span> 
+
+    </a> 
+    
+     
+     <a href="4audi.html" class="brand-card"> 
+
+        <img src="audi-logo.jpg" alt="Tesla" class="brand-logo"> 
+
+        <span class="brand-name">Audi</span> 
+
+        <span class="status-tag">Explore</span> 
+
+    </a>
+
+    <a href="5tesla.html" class="brand-card"> 
+
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/bd/Tesla_Motors.svg" alt="Tesla" class="brand-logo"> 
+
+        <span class="brand-name">Tesla</span> 
+
+
+        <span class="status-tag">Explore</span> 
+
+    </a>
+     
+     <a href="6bentley.html" class="brand-card"> 
+
+        <img src="bent-logo.jpg" alt="BMW" class="brand-logo"> 
+
+        <span class="brand-name">Bentley</span> 
+
+        <span class="status-tag">Explore</span> 
+
+    </a> 
+    
+    <a href="7benz.html" class="brand-card"> 
+
+        <img src="benz-logo.jpg" alt="BMW" class="brand-logo"> 
+
+        <span class="brand-name">Mercedes-Benz</span> 
+
+        <span class="status-tag">Explore</span> 
+
+    </a> 
+     <a href="8ferrari.html" class="brand-card"> 
+
+        <img src="ferrari-logo.jpg" alt="ferrari" class="brand-logo"> 
+
+        <span class="brand-name">Ferrari</span> 
+
+        <span class="status-tag">Explore</span> 
+
+    </a> 
+
+     
+
+    <a href="9lambo.html" class="brand-card"> 
+
+        <img src="lambo-logo.jpg" alt="Lamborghini" class="brand-logo"> 
+
+        <span class="brand-name">Lamborghini</span> 
+
+        <span class="status-tag">Explore</span> 
+
+    </a> 
+    <a href="10jaguar.html" class="brand-card"> 
+
+        <img src="jaguar-logo.jpg" alt="Jaguar" class="brand-logo"> 
+
+        <span class="brand-name">Jaguar</span> 
+
+        <span class="status-tag">Explore</span> 
+
+    </a> 
+    <a href="11toyota.html" class="brand-card"> 
+
+        <img src="toyota-logo.jpg" alt="Toyota" class="brand-logo"> 
+
+        <span class="brand-name">Toyota</span> 
+
+        <span class="status-tag">Explore</span> 
+
+    </a> 
+    <a href="12mclaren.html" class="brand-card"> 
+
+        <img src="mclaren-logo.jpg" alt="Ford" class="brand-logo"> 
+
+        <span class="brand-name">Mclaren</span> 
+
+        <span class="status-tag">Explore</span> 
+
+    </a> 
+    <a href="13bugatti.html" class="brand-card"> 
+
+        <img src="bugatti-logo.jpg" alt="bugatti" class="brand-logo"> 
+
+        <span class="brand-name">Bugatti</span> 
+
+        <span class="status-tag">Explore</span> 
+
+    </a> 
+    <a href="14aston.html" class="brand-card"> 
+
+        <img src="aston-logo.jpg" alt="nissan" class="brand-logo"> 
+
+        <span class="brand-name">Aston Martin</span> 
+
+        <span class="status-tag">Explore</span> 
+
+    </a> 
+    <a href="15volkw.html" class="brand-card"> 
+
+        <img src="volkw-logo.jpg" alt="volkswagen" class="brand-logo"> 
+
+        <span class="brand-name">Volkswagen</span> 
+
+        <span class="status-tag">Explore</span> 
+
+    </a> 
+
+
+     
+
+     
+
+</main> 
+
+ 
+ 
+
+<script> 
+
+    // Authentication Logic 
+
+    const authLink = document.getElementById('auth-link'); 
+
+    const userDisplay = document.getElementById('user-display'); 
+
+    const isLoggedIn = localStorage.getItem('isLoggedIn'); 
+
+    const userEmail = localStorage.getItem('userEmail'); 
+
+ 
+ 
+
+    if (isLoggedIn === 'true') { 
+
+        // Show email and change Login to Logout 
+
+        userDisplay.innerHTML = `<span style="color: #888; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;">${userEmail}</span>`; 
+
+        authLink.innerText = 'Logout'; 
+
+        authLink.style.color = '#ff4d4d'; // Red for logout 
+
+        authLink.href = "#"; 
+
+ 
+ 
+
+        authLink.addEventListener('click', (e) => { 
+
+            e.preventDefault(); 
+
+            localStorage.removeItem('isLoggedIn'); 
+
+            localStorage.removeItem('userEmail'); 
+
+            window.location.reload(); 
+
+        }); 
+
+    } 
+
+
+
+    function updateNavbar() { 
+        // 1. Get the correct container ID from your HTML
+        const authSection = document.getElementById('auth-section'); 
+        const isLoggedIn = localStorage.getItem('isLoggedIn'); 
+        
+        // 2. Get the 'userName' saved by your login page
+        const name = localStorage.getItem('userName'); 
+
+        if (isLoggedIn === 'true' && name) { 
+            // 3. Update the HTML of the auth-section
+            authSection.innerHTML = ` 
+                <div class="user-menu" style="display: flex; align-items: center; gap: 10px;"> 
+                    <span class="user-name-text" style="color: #fff; font-weight: bold; font-size: 0.8rem; letter-spacing: 1px;">
+                        HI, ${name.toUpperCase()}
+                    </span> 
+                    <svg class="user-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> 
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path> 
+                        <circle cx="12" cy="7" r="4"></circle> 
+                    </svg> 
+                    <a href="#" id="logout-btn" style="color: #ff4d4d; text-decoration: none; font-size: 0.8rem; margin-left: 10px; border: 1px solid #ff4d4d; padding: 2px 8px; border-radius: 4px;">Logout</a> 
+                </div> 
+                <a href="garage.html" class="nav-item">garage </a>
+            `; 
+
+            // 4. Add Logout listener
+            document.getElementById('logout-btn').addEventListener('click', (e) => { 
+                e.preventDefault(); 
+                localStorage.removeItem('isLoggedIn'); 
+                localStorage.removeItem('userName'); 
+                window.location.reload(); 
+            }); 
+        } 
+    } 
+ function updateGarageCount() {
+    const bookings = JSON.parse(localStorage.getItem('bookedCars')) || [];
+    const countDisplay = document.getElementById('garage-count');
+    
+    if (countDisplay) {
+        // If there are cars, show the number. If not, show an empty string.
+        if (bookings.length > 0) {
+            countDisplay.innerText = bookings.length; 
+            // If you want brackets only when there are items:
+            // countDisplay.innerText = `(${bookings.length})`;
+        } else {
+            countDisplay.innerText = ""; 
+        }
+    }
+}
+
+// Make sure this is called when the page loads
+window.addEventListener('DOMContentLoaded', updateGarageCount);
+
+
+
+    window.onload = updateNavbar; 
+</script>
+</body> 
+</html>
